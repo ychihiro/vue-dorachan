@@ -3,8 +3,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import firebase from "firebase";
+import axios from 'axios';
 
 createApp(App).use(store).use(router).mount('#app')
+// app.config.globalProperties.$http = axios
+// app.config.productionTip = false;
+axios.defaults.baseURL = "https://firestore.googleapis.com/v1/projects/fir-dorachan/databases/(default)/users";
 
 if (!firebase.apps.length) {
   firebase.initializeApp({

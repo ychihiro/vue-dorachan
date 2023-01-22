@@ -1,80 +1,50 @@
 <template>
   <div class="register">
-    <!-- <div class="email"></div> -->
-    <label>メールアドレス
-    <input type="email" v-model="email" placeholder="nobi@nobita">
-    </label>
-    <label>パスワード
-    <input type="password" v-model="password" placeholder="nobinobita">
-    </label>
-    <button @click="register">登録</button>
+<label class="username">ユーザーネーム
+<input type="text" v-model="name" placeholder="のび太">
+</label>
+<label class="email">メールアドレス
+<input type="email" v-model="email" placeholder="nobi@nobita.com">
+</label>
+<label class="password">パスワード
+<input type="password" v-model="password" placeholder="nobinobita">
+</label>
+<button @click="register">登録</button>
   </div>
 </template>
 
 <script>
-import firebase from '../main';
+import axios from 'axios';
+import firebase from 'firebase';
 export default {
   data() {
-    return {
-      email: '',
-      password: '',
-    };
+return {
+  name: '',
+  email: '',
+  password: '',
+};
   },
   methods: {
     register() {
-      if (!this.email || !this.password) {
-        alert("メールアドレスまたはパスワードが入力されていません。");
-        return;
-      }
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((data) => {
           data.user.sendEmailVerification().then(() => {
-            this.$router.replace("/");
-            alert("登録が完了しました");
+            this.$router.replace("/confirm");
           });
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "auth/invalid-email":
-              alert("メールアドレスの形式が違います。");
-              break;
-            case "auth/email-already-in-use":
-              alert("このメールアドレスはすでに使われています。");
-              break;
-            case "auth/weak-password":
-              alert("パスワードは6文字以上で入力してください。");
-              break;
-            default:
-              alert("エラーが起きました。しばらくしてから再度お試しください。");
-              break;
-          }
         });
-    }
-  }
-}
+      axios
+        .post("http://localhost:8000/api/v1/user",
+          {
+            name: this.name,
+            email: this.email,
+            password: this.password
+        })
+        .then((response) => (this.info = response))
+        .then(alert('成功しました！！！'));
+    },
+  },
+};
 </script>
 
-<style scoped>
-.register {
-  background-color: #fff;
-  width: 250px;
-  padding: 20px 30px;
-  margin: 0 auto;
-  border-radius: 10px;
-}
-
-label {
-  /* border: 2px solid red; */
-  display: block;
-  text-align: left;
-  margin-bottom: 30px;
-}
-
-input {
-  width: 100%;
-  height: 30px;
-  border-radius: 5px;
-}
-</style>
