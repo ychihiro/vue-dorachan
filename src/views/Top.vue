@@ -3,14 +3,17 @@
   <p class="sub-ttl">〜ぼくドラえもん〜</p>
   <img src="../assets/ドラえもん.gif" alt="ドラえもん">
   <label>診断名
-  <input type="text" v-model="diagnosiskey">
+  <input type="text" v-model="diagnosisKey">
   </label>
   <label>キャラクター名
-  <input type="text" v-model="charakey">
+  <input type="text" v-model="characterKey">
   </label>
   <button @click="search">検索</button>
-  <ul v-for="diagnosis in getList" :key="diagnosis">
-    <li>{{ diagnosis.name }}</li>
+  <ul v-for="diagnosis in diagnoses" :key="diagnosis">
+    <li v-if="show">{{ diagnosis.name }}</li>
+  </ul>
+  <ul v-for="item in getItem" :key="item">
+    <li>{{ item }}</li>
   </ul>
 </template>
 
@@ -20,10 +23,12 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      show: true,
       diagnoses: [],
-      filteredKey:[],
-      diagnosiskey: '',
-      charakey: ''
+      searchResults: [],
+      diagnosisKey: '',
+      characterKey: '',
+      
     };
   },
   mounted() {
@@ -31,36 +36,56 @@ export default {
       .get("http://localhost:8000/api/v1/diagnosis")
       .then((response) => {
         this.diagnoses = response.data;
-        this.filteredKey = response.data;
       });
   },
   computed: {
-    getList() {
-      return this.filteredKey;
+    getItem() {
+      return this.searchResults.filter((element, index, self) => self.indexOf(element) === index);
     }
   },
   methods: {
     search() {
-      // let searchdiagnosis = this.diagnosiskey.trim();
-      let searchchara = this.charakey.trim();
-      // if (searchdiagnosis == '' && searchchara == '') {
-      //   return this.filteredKey = this.diagnoses;
-      // }
-      console.log(searchchara);
-      this.filteredKey = this.diagnoses.filter(diagnosis => {
-        return diagnosis.characters.forEach(key => { key.name.includes(searchchara)
-        });
-      });
-      console.log(this.filteredKey);
+      this.show = false;
+      let data = this.diagnoses
+      let charaNameKey = Object.keys(data[0])[5];
+      let searchDiagnosis = this.diagnosisKey.trim();
+      let searchCharacter = this.characterKey.trim();
+
+      this.searchResults = [];
+
+      if (searchDiagnosis == '' && searchCharacter == '') {
+        for (let i = 0; i < data.length; i++) {
+          let diagnosesName = this.diagnoses[i];
+          this.searchResults.push(diagnosesName.name);
+        }
+      }
+      if (searchDiagnosis != '') {
+        for (let i = 0; i < data.length; i++) {
+          let diagnosisName = this.diagnoses[i].name;
+          let diagnosisResult = diagnosisName.includes(searchDiagnosis);
+          if (diagnosisResult) {
+            this.searchResults.push(diagnosisName);
+          }
+        }
+      }
+      if (searchCharacter != '') {
+        for (let i = 0; i < data.length; i++) {
+          let diagnosesName = this.diagnoses[i];
+          let characterArray = diagnosesName[charaNameKey];
+          for (let j = 0; j < characterArray.length; j++) {
+            let character = characterArray[j].name.indexOf(searchCharacter);
+            if (character === 0) {
+              this.searchResults.push(diagnosesName.name);
+            }
+          }
+        }
+      }
     }
   }
 }
 
-// this.filteredKey = this.diagnoses.filter(diagnosis => {
-//   return diagnosis.name.includes(searchdiagnosis) || diagnosis.characters.forEach(character => {
-//     character.name.includes(searchchara)
-//   });
-// });
+
+
 
 
 </script>
