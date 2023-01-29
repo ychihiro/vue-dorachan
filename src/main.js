@@ -3,12 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import firebase from "firebase";
-import axios from 'axios';
+// import axios from 'axios';
 
 createApp(App).use(store).use(router).mount('#app')
-// app.config.globalProperties.$http = axios
 // app.config.productionTip = false;
-axios.defaults.baseURL = "https://firestore.googleapis.com/v1/projects/fir-dorachan/databases/(default)/users";
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
@@ -21,5 +19,6 @@ if (!firebase.apps.length) {
   measurementId: "G-1C93ZB2L59"
   });
 }
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
 
 export default firebase;

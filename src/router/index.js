@@ -4,6 +4,7 @@ import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
 import Thanks from '../views/Thanks.vue'
 import Diagnosis from '../views/Diagnosis.vue'
+import MyPage from '../views/MyPage.vue'
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     component: Login
   },
   {
+    path: '/logout',
+    name: 'logout',
+    component: Top,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/thanks',
     name: 'thanks',
     component: Thanks
@@ -30,6 +37,11 @@ const routes = [
     path: '/diagnosis',
     name: 'diagnosis',
     component: Diagnosis
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    component: MyPage
   }
 ]
 

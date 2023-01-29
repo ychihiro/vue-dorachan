@@ -1,7 +1,7 @@
 <template>
   <div class="register">
 <label class="username">ユーザーネーム
-<input type="text" v-model="name" placeholder="のび太">
+<input type="text" v-model="userName" placeholder="のび太">
 </label>
 <label class="email">メールアドレス
 <input type="email" v-model="email" placeholder="nobi@nobita.com">
@@ -19,7 +19,7 @@ import firebase from 'firebase';
 export default {
   data() {
 return {
-  name: '',
+  userName: '',
   email: '',
   password: '',
 };
@@ -32,17 +32,21 @@ return {
         .then((data) => {
           data.user.sendEmailVerification().then(() => {
             this.$router.replace("/confirm");
+            console.log(data)
           });
         });
       axios
         .post("http://localhost:8000/api/v1/user",
           {
-            name: this.name,
+            name: this.userName,
             email: this.email,
             password: this.password
-        })
+          })
         .then((response) => (this.info = response))
-        .then(alert('成功しました！！！'));
+        .then((response) => console.log(response))
+        .catch((error) => {
+          console.log(error);
+        })
     },
   },
 };

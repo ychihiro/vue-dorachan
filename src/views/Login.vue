@@ -11,8 +11,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-// import firebase from '../main';
+// import axios from 'axios';
+import firebase from '../main';
+import firebaseUtils from './../firebaseUtils';
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
@@ -21,10 +24,28 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['setUser']),
     login() {
-      axios
-      .show
+      if (!this.email || !this.password) {
+        alert('メールアドレスまたはパスワードが入力されていません。')
+        return
+      }
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then((data) => {
+          // const user = data.this;
+          // this.setUser(user);
+          // console.log(this.$store.state.user);
+          firebaseUtils.onAuthStateChanged(data);
+          alert('ログインが完了しました')
+          this.$router.push('/thanks');
+        })
+        .catch((error) => {
+          alert('ログインエラー');
+          console.log(error);
+        });
     }
-  },
+  }
 }
 </script>
