@@ -83,26 +83,16 @@ export default {
     clickName(diagnosisitem) {
       for (let i = 0; i < this.diagnoses.length; i++) {
         if (this.diagnoses[i].name === diagnosisitem) {
-
-          this.$store.dispatch('setId', this.diagnoses[i].id)
-          this.$store.dispatch('setCharacters', this.diagnoses[i].characters);
-          this.$store.dispatch('setQuestions', this.diagnoses[i].questions);
+          this.$store.commit('diagnoses/setId', this.diagnoses[i].id, )
+          this.$store.commit('diagnoses/setCharacters', this.diagnoses[i].characters);
+          this.$store.commit('diagnoses/setQuestions', this.diagnoses[i].questions);
           console.log(this.diagnoses[i].id);
-          console.log(this.$store.state.id);
           console.log(this.diagnoses[i].characters);
           console.log(this.diagnoses[i].questions);
-          for (let j = 0; j < this.diagnoses.length; j++) {
-            // let test = this.diagnoses[i].questions[j]
-            // console.log(test)
-            for (let k = 0; k < 3; k++) {
-              let test2 = this.diagnoses[i].questions[j].choices[k]
-              console.log(test2)
-            }
-
-          }
         }
       }
     }
   }
 }
+
 </script>

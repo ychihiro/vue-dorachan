@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 import diagnoses from './modules/diagnoses'
 
 export default createStore({
-  strict: true,
   state: {
     user: {},
     isLogin: false,
@@ -35,6 +35,13 @@ export default createStore({
   // },
   },
   modules: {
-    diagnoses
-  }
+    diagnoses,
+  },
+  plugins: [createPersistedState(
+    { 
+      key: 'doraApp',
+      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions'],
+      storage: window.sessionStorage
+    }
+  )]
 })

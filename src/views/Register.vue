@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import firebase from 'firebase';
 export default {
   data() {
@@ -22,6 +22,7 @@ return {
   userName: '',
   email: '',
   password: '',
+  uid: '',
 };
   },
   methods: {
@@ -35,18 +36,19 @@ return {
             console.log(data)
           });
         });
-      axios
-        .post("http://localhost:8000/api/v1/user",
-          {
-            name: this.userName,
-            email: this.email,
-            password: this.password
-          })
-        .then((response) => (this.info = response))
-        .then((response) => console.log(response))
-        .catch((error) => {
-          console.log(error);
-        })
+      // axios
+      //   .post("http://localhost:8000/api/v1/user",
+      //     {
+      //       name: this.userName,
+      //       email: this.email,
+      //       password: this.password,
+      //       uuid: this.uid
+      //     })
+      //   .then((response) => (this.info = response))
+      //   .then((response) => console.log(response))
+      //   .catch((error) => {
+      //     console.log(error);
+      //   })
     },
   },
 };
