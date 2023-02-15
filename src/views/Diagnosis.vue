@@ -18,7 +18,6 @@ Q{{ currentQuestion }}.{{ question.content }}
 </template>
 
 <script>
-
 export default {
   mounted() {
     console.log(this.id)

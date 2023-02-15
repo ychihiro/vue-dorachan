@@ -7,6 +7,6 @@ export default {
       let user = u ? u : {};
       store.commit('onAuthStateChanged', user);
       store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-    })
+    }) 
   }
 }

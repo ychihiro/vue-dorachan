@@ -11,10 +11,15 @@
 </label>
 <button @click="register">登録</button>
   </div>
+  <div>{{ userName }}</div>
+  <div>{{ email }}</div>
+  <div>{{ password }}</div>
+  <div>{{ uid }}</div>
 </template>
 
+
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import firebase from 'firebase';
 export default {
   data() {
@@ -30,25 +35,33 @@ return {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then((data) => {
-          data.user.sendEmailVerification().then(() => {
-            this.$router.replace("/confirm");
-            console.log(data)
+        .then((userCredential) => {
+          userCredential.user.sendEmailVerification().then(() => {
+            console.log('確認メール送信')
           });
-        });
-      // axios
-      //   .post("http://localhost:8000/api/v1/user",
-      //     {
-      //       name: this.userName,
-      //       email: this.email,
-      //       password: this.password,
-      //       uuid: this.uid
-      //     })
-      //   .then((response) => (this.info = response))
-      //   .then((response) => console.log(response))
-      //   .catch((error) => {
-      //     console.log(error);
-      //   })
+          userCredential.user.updateProfile({
+            displayName: this.userName
+          })
+          this.uid = userCredential.user.uid;
+          console.log(this.userName);
+          console.log(this.uid);
+          // console.log(userCredential);
+          axios
+            .post("http://localhost:8000/api/v1/user",
+              {
+                name: this.userName,
+                email: this.email,
+                password: this.password,
+                id: this.uid
+              })
+            // .then((response) => (this.info = response))
+            .then((response) => console.log(response))
+            .catch((error) => {
+              console.log(error);
+            })
+        })
+        // });
+      
     },
   },
 };

@@ -14,7 +14,7 @@
 // import axios from 'axios';
 import firebase from '../main';
 import firebaseUtils from './../firebaseUtils';
-import { mapActions } from 'vuex';
+// import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -24,7 +24,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setUser']),
+    // ...mapActions(['setUser']),
     login() {
       if (!this.email || !this.password) {
         alert('メールアドレスまたはパスワードが入力されていません。')
@@ -33,18 +33,24 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then((data) => {
-          // const user = data.this;
-          // this.setUser(user);
-          // console.log(this.$store.state.user);
-          firebaseUtils.onAuthStateChanged(data);
+        .then(() => {
           alert('ログインが完了しました')
-          this.$router.push('/thanks');
+          firebaseUtils.onAuthStateChanged();
+          alert('login success');
+          this.$router.push('/');
         })
         .catch((error) => {
           alert('ログインエラー');
           console.log(error);
         });
+      // firebase
+      //   .auth()
+      //   .onAuthStateChanged(u => {
+      //     let user = u ? u : {};
+      //     console.log(user)
+      //     this.$store.commit('onAuthStateChanged', user);
+      //     this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
+      //   })        
     }
   }
 }

@@ -6,93 +6,194 @@
     <input type="text" v-model="characterKey">
   </label>
   <button @click="search">検索</button>
-  <ul v-for="diagnosis in diagnoses" :key="diagnosis">
-    <li v-if="show" @click="clickName(diagnosis.name)">{{ diagnosis.name }}</li>
-  </ul>
-  <ul v-for="item in getItem" :key="item">
-    <li>{{ item }}</li>
+  <button @click="popular" :class="{ 'popular_btn': active}">
+  人気順</button>
+  <ul  v-for="diagnosis in diagnoses" :key="diagnosis" >
+    <li v-show="show == diagnosis.show" @click="clickName(diagnosis.name)">{{ diagnosis.name }}
+    <span @click="goodBtn(diagnosis)">
+    <i class="fa-solid fa-heart like" :class="{liked: isliked != diagnosis.isliked, unlike: isliked == diagnosis.isliked}"></i>
+    {{ diagnosis.count }}
+    </span>
+    </li>
   </ul>
 </template>
 
 <script>
 import axios from 'axios';
+import firebase from '../main';
 
 export default {
-  mounted() {
-    axios
-      .get("http://localhost:8000/api/v1/diagnosis")
-      .then((response) => {
-        this.diagnoses = response.data;
-        console.log(this.diagnoses);
-      });
+  created() {
+    firebase
+      .auth()
+      .onAuthStateChanged(u => {
+        let user = u ? u : {};
+        this.$store.commit('onAuthStateChanged', user);
+        this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
+        this.userUid = this.$store.getters.user.uid
+        this.checkedlike(this.userUid)
+      })
+  },
+  async mounted() {
+    const response = await axios
+      .get("http://localhost:8000/api/v1/diagnosis");
+    this.diagnoses = response.data;
+
+    const item = [];
+    for (let i = 0; i < this.diagnoses.length; i++) {
+      this.diagnosisId.push(this.diagnoses[i].id);
+      this.diagnoses[i].show = true;
+      item.push(this.diagnoses[i].characters);
+    }
+    this.characters = item.flat(2);
   },
   data() {
     return {
       show: true,
       diagnoses: [],
+      characters: [],
+      diagnosisId: [],
+      new: [],
       questions: [],
       searchResults: [],
       diagnosisKey: '',
       characterKey: '',
+      act: [],
+      userUid: '',
+      countLikes: '',
+      myFavorite: [],
+      user: '',
+      isliked: null,
+      liketest: [1, 4],
+      active: null,
     };
-  },
-  computed: {
-
-    getItem() {
-      return this.searchResults.filter((element, index, self) => self.indexOf(element) === index);
-    }
   },
   methods: {
     search() {
-      this.show = false;
-      let data = this.diagnoses
-      let charaNameKey = Object.keys(data[0])[5];
       let searchDiagnosis = this.diagnosisKey.trim();
       let searchCharacter = this.characterKey.trim();
-
-      this.searchResults = [];
-
-      if (searchDiagnosis == '' && searchCharacter == '') {
-        for (let i = 0; i < data.length; i++) {
-          let diagnosesName = this.diagnoses[i];
-          this.searchResults.push(diagnosesName.name);
-        }
-      }
-      if (searchDiagnosis != '') {
-        for (let i = 0; i < data.length; i++) {
-          let diagnosisName = this.diagnoses[i].name;
-          let diagnosisResult = diagnosisName.includes(searchDiagnosis);
-          if (diagnosisResult) {
-            this.searchResults.push(diagnosisName);
+      let item = [];
+      if (!searchDiagnosis && !searchCharacter) {
+        this.diagnoses.forEach(element => {
+          item.push(element);
+        })
+      } else {
+        this.characters.forEach(element => {
+          if (element.name.indexOf(searchCharacter) !== -1 && searchCharacter) {
+            const diagnosisId = element.diagnosis_id;
+            this.diagnoses.forEach(element => {
+              if (element.id === diagnosisId) {
+                item.push(element);
+              } else {
+                element.show = null;
+              }
+            })
           }
-        }
+        })
       }
-      if (searchCharacter != '') {
-        for (let i = 0; i < data.length; i++) {
-          let diagnosesName = this.diagnoses[i];
-          let characterArray = diagnosesName[charaNameKey];
-          for (let j = 0; j < characterArray.length; j++) {
-            let character = characterArray[j].name.indexOf(searchCharacter);
-            if (character === 0) {
-              this.searchResults.push(diagnosesName.name);
+      this.diagnoses.forEach(element => {
+        if (element.name.search(searchDiagnosis) !== -1 && searchDiagnosis) {
+          item.push(element);
+        } else {
+          element.show = null;
+        }
+      })
+      // console.log(item)
+      item.forEach(element => {
+        element.show = true
+      })
+    },
+    popular() {
+      if (!this.active) {
+        this.diagnoses.sort((a, b) => b.count - a.count);
+        this.active = true
+      } else {
+        this.diagnoses.sort((a, b) => a.id - b.id);
+        this.active = false
+      }
+    },
+    async checkedlike(id) {
+      const myFavorite = await axios.get("http://localhost:8000/api/v1/like/" + id);
+      const likedItem = await axios.get("http://localhost:8000/api/v1/like");
+
+      const likedItemId = [];
+      for (let i = 0; i < likedItem.data.length; i++) {
+        likedItemId.push(likedItem.data[i].diagnosis_id);
+      }
+      likedItemId.forEach(element => {
+        const result = this.diagnosisId.indexOf(element)
+        if (result != -1) {
+          this.diagnoses.forEach(diagnosis => {
+            if (diagnosis.id === element && !diagnosis.count ) {
+              diagnosis.count = 1;
+            } else if (diagnosis.id === element && diagnosis.count) {
+              diagnosis.count = diagnosis.count + 1;
             }
-          }
+          })
         }
+      })
+      // いいねボタンのスタイル
+      for (let i = 0; i < myFavorite.data.length; i++) {
+        this.myFavorite[i] = myFavorite.data[i].diagnosis_id;
       }
+      this.diagnoses.forEach(element => {
+        const result = this.myFavorite.indexOf(element.id);
+        if (result !== -1) {
+          element.isliked = true;
+        }
+        if (!element.count) {
+          element.count = 0;
+        }
+      });
+    },
+    goodBtn(diagnosis) {
+      if (diagnosis.isliked) {
+        diagnosis.isliked = null;
+        this.unlike(diagnosis);
+      } else if (!diagnosis.isliked) {
+        diagnosis.isliked = true;
+        this.like(diagnosis);
+      }
+    },
+    async like(diagnosis) {
+      diagnosis.count++
+      const response = await axios.post("http://localhost:8000/api/v1/like", {
+        user_id: this.userUid,
+        diagnosis_id: diagnosis.id
+      });
+      console.log(response.data)
+    },
+    async unlike(diagnosis) {
+      diagnosis.count--
+      const response = await axios.delete("http://localhost:8000/api/v1/like/" + diagnosis.id, {
+        data: { user_id: this.userUid }
+      });
+      console.log(response)
     },
     clickName(diagnosisitem) {
       for (let i = 0; i < this.diagnoses.length; i++) {
         if (this.diagnoses[i].name === diagnosisitem) {
-          this.$store.commit('diagnoses/setId', this.diagnoses[i].id, )
+          this.$store.commit('diagnoses/setId', this.diagnoses[i].id,)
           this.$store.commit('diagnoses/setCharacters', this.diagnoses[i].characters);
           this.$store.commit('diagnoses/setQuestions', this.diagnoses[i].questions);
-          console.log(this.diagnoses[i].id);
-          console.log(this.diagnoses[i].characters);
-          console.log(this.diagnoses[i].questions);
+          // console.log(this.diagnoses[i].id);
+          // console.log(this.diagnoses[i].characters);
+          // console.log(this.diagnoses[i].questions);
         }
       }
-    }
+    },
   }
 }
 
 </script>
+<style>
+.liked {
+  color: palevioletred;
+}
+.unlike {
+  color: skyblue;
+}
+.popular_btn {
+  background-color: yellow;
+}
+</style>
