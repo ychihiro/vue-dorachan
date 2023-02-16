@@ -10,11 +10,11 @@
   人気順</button>
   <ul  v-for="diagnosis in diagnoses" :key="diagnosis" >
     <li v-show="show == diagnosis.show" @click="clickName(diagnosis.name)">{{ diagnosis.name }}
+    </li>
     <span @click="goodBtn(diagnosis)">
     <i class="fa-solid fa-heart like" :class="{liked: isliked != diagnosis.isliked, unlike: isliked == diagnosis.isliked}"></i>
     {{ diagnosis.count }}
     </span>
-    </li>
   </ul>
 </template>
 
@@ -49,23 +49,17 @@ export default {
   },
   data() {
     return {
-      show: true,
       diagnoses: [],
       characters: [],
       diagnosisId: [],
-      new: [],
       questions: [],
-      searchResults: [],
       diagnosisKey: '',
       characterKey: '',
-      act: [],
       userUid: '',
-      countLikes: '',
       myFavorite: [],
-      user: '',
       isliked: null,
-      liketest: [1, 4],
       active: null,
+      show: true,
     };
   },
   methods: {
@@ -176,11 +170,12 @@ export default {
           this.$store.commit('diagnoses/setId', this.diagnoses[i].id,)
           this.$store.commit('diagnoses/setCharacters', this.diagnoses[i].characters);
           this.$store.commit('diagnoses/setQuestions', this.diagnoses[i].questions);
-          // console.log(this.diagnoses[i].id);
-          // console.log(this.diagnoses[i].characters);
-          // console.log(this.diagnoses[i].questions);
+          console.log(this.diagnoses[i].id);
+          console.log(this.diagnoses[i].characters);
+          console.log(this.diagnoses[i].questions);
         }
       }
+      this.$router.push('/diagnosis') 
     },
   }
 }

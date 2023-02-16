@@ -4,6 +4,7 @@ export default {
     id: '',
     characters: [],
     questions: [],
+    results: [],
   },
   getters: {
     
@@ -18,6 +19,9 @@ export default {
     setQuestions(state, payload) {
       state.questions = payload;
     },
+    setResults(state, payload) {
+      state.results = payload
+    }
   },
   actions: {
   },

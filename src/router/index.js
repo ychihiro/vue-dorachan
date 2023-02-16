@@ -4,6 +4,7 @@ import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
 import Thanks from '../views/Thanks.vue'
 import Diagnosis from '../views/Diagnosis.vue'
+import Result from '../views/Result.vue'
 import MyPage from '../views/MyPage.vue'
 
 const routes = [
@@ -37,6 +38,11 @@ const routes = [
     path: '/diagnosis',
     name: 'diagnosis',
     component: Diagnosis
+  },
+  {
+    path: '/result',
+    name: 'result',
+    component: Result
   },
   {
     path: '/mypage',

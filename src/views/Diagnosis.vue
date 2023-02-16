@@ -1,128 +1,78 @@
 <template>
-<div v-for="question in filteredDiagnoses" :key="question">
+<div v-for="question in filteredQuestions" :key="question">
 Q{{ currentQuestion }}.{{ question.content }}
-<p @click="choiceBtn1(question.choices[0])" v-bind:style="{ background: question.choices[0].color }">
-  {{ question.choices[0].content }}
-</p>
-<p @click="choiceBtn2(question.choices[1])" v-bind:style="{ background: question.choices[1].color }">
-  {{ question.choices[1].content }}
-</p>
-<p @click="choiceBtn3(question.choices[2])" v-bind:style="{ background: question.choices[2].color }">
-  {{ question.choices[2].content }}
+<p v-for="choice in filteredChoices" :key="choice.id" @click="choiceBtn(choice)" :class="{choice: choice.isChoiced}">
+{{ choice.content }}
 </p>
 </div>
 <button @click="prevPage" v-show="prevBtn">前へ</button>
 <button @click="nextPage" v-show="nextBtn">次へ</button>
 <button @click="resultBtn" v-show="showResult">診断結果をみる</button>
-<!-- <button @click="test">テスト</button> -->
 </template>
 
 <script>
 export default {
   mounted() {
-    console.log(this.id)
     console.log(this.questions)
-    console.log(this.characters)
+    const choices = [];
+    for (let i = 0; i < this.questions.length; i++) {
+      choices.push(this.questions[i].choices);
+    }
+    this.choices = choices.flat(2);
+    console.log(this.choices)
   },
   data() {
     return {
-      id: this.$store.state.diagnoses.id,
+      diagnosisId: this.$store.state.diagnoses.id,
       questions: this.$store.state.diagnoses.questions,
       characters: this.$store.state.diagnoses.characters,
-      temporary: [],
+      choices: [],
+      choiceItem: [],
       userScore: [],
       result: [],
       showResult: false,
       currentQuestion: 1,
       prevBtn: false,
       nextBtn: true,
-      item: [
-        { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] }, { 'box': [] },
-      ],
     }
   },
   watch: {
     computedResults: {
+      // 選択ボタンを押した時のスタイル切り替え
       handler: function (val, oldval) {
-        console.log(this.temporary)
         const oldLength = Object.keys(oldval).length
         const valLength = Object.keys(val).length
-        if (oldLength !== 0) {
-          for (let i = 1; i < valLength; i++) {
-            if (val[i].question_id === oldval[i - 1].question_id) {
-              const valId = val[i].question_id;
-              const searchIndex = this.temporary.findIndex(({ question_id }) => question_id == valId)
-              this.temporary.splice(searchIndex, 1)
-            }
+        for (let i = 1; i <= valLength; i++) {
+          val[i].isChoiced = true
+          if (oldLength === valLength) {
+            oldval[oldLength].isChoiced = null
           }
         }
-        if (this.temporary.length === 10) {
-          this.showResult = true;
-        }
-      },
-      deep: true
+      }
     },
   },
   computed: {
     computedResults() {
-      return Object.assign({}, this.temporary)
+      return Object.assign({}, this.choiceItem)
     },
-    filteredDiagnoses() {
+    filteredQuestions() {
       return this.questions.filter(question => {
         return question.number === this.currentQuestion;
       });
     },
+    filteredChoices() {
+      return this.choices.filter(choice => {
+        return choice.question_id === this.currentQuestion;
+      });
+    },
   },
   methods: {
-    choiceBtn1(choice) {
-      this.temporary.push(choice)
-      for (let i = 0; i < this.questions.length; i++) {
-        if (choice.question_id === i + 1) {
-          if (this.item[i].box.length === 1) {
-            this.item[i].box[0].color = null
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.shift();
-            this.item[i].box.push(choice)
-          } else if (this.item[i].box.length === 0) {
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.push(choice)
-          }
-          console.log(this.item)
-        }
-      }
-    },
-    choiceBtn2(choice) {
-      this.temporary.push(choice)
-      for (let i = 0; i < this.questions.length; i++) {
-        if (choice.question_id === i + 1) {
-          if (this.item[i].box.length === 1) {
-            this.item[i].box[0].color = null
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.shift();
-            this.item[i].box.push(choice)
-          } else if (this.item[i].box.length === 0) {
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.push(choice)
-          }
-          console.log(this.item)
-        }
-      }
-    },
-    choiceBtn3(choice) {
-      this.temporary.push(choice)
-      for (let i = 0; i < this.questions.length; i++) {
-        if (choice.question_id === i + 1) {
-          if (this.item[i].box.length === 1) {
-            this.item[i].box[0].color = null
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.shift();
-            this.item[i].box.push(choice)
-          } else if (this.item[i].box.length === 0) {
-            choice['color'] = '#D1DA6D'
-            this.item[i].box.push(choice)
-          }
-          console.log(this.item)
-        }
+    choiceBtn(choice) {
+      this.choiceItem[choice.question_id] = choice
+      console.log('choiceItem')
+      console.log(this.choiceItem)
+      if (this.choiceItem.length === 11) {
+        this.showResult = true
       }
     },
     prevPage() {
@@ -146,10 +96,10 @@ export default {
       }
     },
     resultBtn() {
-      // console.log(this.temporary);
+      // console.log(this.choiceItem)
       this.userScore = [...
-        this.temporary.reduce(
-          (m, value) => m.set(value.item, (m.get(value.item) || 0) + value.score)
+        this.choiceItem.reduce(
+          (m, value) => m.set(value.item, (m.get(value.item) || 3) + value.score)
           , new Map()
         )].map(([item, score]) => ({ item, score }));
       // console.log(this.userScore);
@@ -188,38 +138,47 @@ export default {
             case 'sincerity':
               if (element.score >= this.characters[i].sincerity) {
                 this.characters[i]['average'] += Math.floor(100 - (element.score - this.characters[i].sincerity) / element.score * 100)
-                // console.log(this.characters[i]['average'])
+                console.log(this.characters[i]['average'])
               } else {
                 this.characters[i]['average'] += Math.floor(100 - (this.characters[i].sincerity - element.score) / this.characters[i].sincerity * 100)
-                // console.log(this.characters[i]['average'])
+                console.log(this.characters[i]['average'])
               }
               break;
           }
         });
-        this.characters[i]['average'] = Math.floor(this.characters[i]['average'] /= 5)
+        this.characters[i]['average'] = this.characters[i]['average'] /= 5
+          // Math.floor(this.characters[i]['average'] /= 5)
       }
-      // console.log(this.characters)
+      console.log(this.characters)
       const max = Math.max.apply(null, this.characters.map(function (o) { return o.average })
       );
       // console.log('最大:' + max)
-      this.characters.forEach(element => {
-        console.log(element.average)
-      })
+      // this.characters.forEach(element => {
+      //   console.log(element.average)
+      // })
       this.result = this.characters.filter(character => {
         return character.average === max
       })
+      // const random = Math.floor(Math.random() * 11);
+      const random = Math.floor(Math.random() * 2);
+      if (random === 0) {
+        this.result[0].result = false
+      } else {
+        this.result[0].result = true
+      }
+      console.log('結果')
       console.log(this.result)
+      console.log(random)
+      // this.$store.commit('diagnoses/setResults', this.result)
+      // this.$router.push('/result') 
     },
-    // test() {
-    //   console.log(this.id)
-    //   console.log(this.$store.state.questions)
-    //   console.log(this.characters)
-    //   console.log(this.choices)
-    // },
   }
 }
 
 </script> 
 
 <style>
+.choice {
+  background-color: #D1DA6D;
+}
 </style>
