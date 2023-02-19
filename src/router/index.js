@@ -6,6 +6,7 @@ import Thanks from '../views/Thanks.vue'
 import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyPage from '../views/MyPage.vue'
+import Addmin from '../views/Addmin.vue'
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/mypage',
     name: 'mypage',
     component: MyPage
+  },
+  {
+    path: '/addmin',
+    name: 'addmin',
+    component: Addmin
   }
 ]
 

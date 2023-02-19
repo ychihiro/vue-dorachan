@@ -8,31 +8,22 @@
   <button @click="search">検索</button>
   <button @click="popular" :class="{ 'popular_btn': active}">
   人気順</button>
-  <ul  v-for="diagnosis in diagnoses" :key="diagnosis" >
-    <li v-show="show == diagnosis.show" @click="clickName(diagnosis.name)">{{ diagnosis.name }}
-    </li>
-    <span @click="goodBtn(diagnosis)">
-    <i class="fa-solid fa-heart like" :class="{liked: isliked != diagnosis.isliked, unlike: isliked == diagnosis.isliked}"></i>
-    {{ diagnosis.count }}
-    </span>
+  <ul v-for="diagnosis in diagnoses" :key="diagnosis.id">
+  <div v-show="show == diagnosis.show">
+  <diagnosis-item :name="diagnosis.name" :diagnoses="diagnoses"></diagnosis-item>
+  <like-component :diagnosisItem="diagnosis"></like-component>
+  </div>
   </ul>
 </template>
 
 <script>
 import axios from 'axios';
-import firebase from '../main';
-
+import Diagnosis from '@/components/DiagnosisItem.vue';
+import Like from '@/components/Like.vue';
 export default {
-  created() {
-    firebase
-      .auth()
-      .onAuthStateChanged(u => {
-        let user = u ? u : {};
-        this.$store.commit('onAuthStateChanged', user);
-        this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-        this.userUid = this.$store.getters.user.uid
-        this.checkedlike(this.userUid)
-      })
+  components: {
+    'diagnosis-item': Diagnosis,
+    'like-component': Like
   },
   async mounted() {
     const response = await axios
@@ -46,6 +37,7 @@ export default {
       item.push(this.diagnoses[i].characters);
     }
     this.characters = item.flat(2);
+    // console.log(this.diagnoses)
   },
   data() {
     return {
@@ -55,9 +47,6 @@ export default {
       questions: [],
       diagnosisKey: '',
       characterKey: '',
-      userUid: '',
-      myFavorite: [],
-      isliked: null,
       active: null,
       show: true,
     };
@@ -106,88 +95,10 @@ export default {
         this.active = false
       }
     },
-    async checkedlike(id) {
-      const myFavorite = await axios.get("http://localhost:8000/api/v1/like/" + id);
-      const likedItem = await axios.get("http://localhost:8000/api/v1/like");
-
-      const likedItemId = [];
-      for (let i = 0; i < likedItem.data.length; i++) {
-        likedItemId.push(likedItem.data[i].diagnosis_id);
-      }
-      likedItemId.forEach(element => {
-        const result = this.diagnosisId.indexOf(element)
-        if (result != -1) {
-          this.diagnoses.forEach(diagnosis => {
-            if (diagnosis.id === element && !diagnosis.count ) {
-              diagnosis.count = 1;
-            } else if (diagnosis.id === element && diagnosis.count) {
-              diagnosis.count = diagnosis.count + 1;
-            }
-          })
-        }
-      })
-      // いいねボタンのスタイル
-      for (let i = 0; i < myFavorite.data.length; i++) {
-        this.myFavorite[i] = myFavorite.data[i].diagnosis_id;
-      }
-      this.diagnoses.forEach(element => {
-        const result = this.myFavorite.indexOf(element.id);
-        if (result !== -1) {
-          element.isliked = true;
-        }
-        if (!element.count) {
-          element.count = 0;
-        }
-      });
-    },
-    goodBtn(diagnosis) {
-      if (diagnosis.isliked) {
-        diagnosis.isliked = null;
-        this.unlike(diagnosis);
-      } else if (!diagnosis.isliked) {
-        diagnosis.isliked = true;
-        this.like(diagnosis);
-      }
-    },
-    async like(diagnosis) {
-      diagnosis.count++
-      const response = await axios.post("http://localhost:8000/api/v1/like", {
-        user_id: this.userUid,
-        diagnosis_id: diagnosis.id
-      });
-      console.log(response.data)
-    },
-    async unlike(diagnosis) {
-      diagnosis.count--
-      const response = await axios.delete("http://localhost:8000/api/v1/like/" + diagnosis.id, {
-        data: { user_id: this.userUid }
-      });
-      console.log(response)
-    },
-    clickName(diagnosisitem) {
-      for (let i = 0; i < this.diagnoses.length; i++) {
-        if (this.diagnoses[i].name === diagnosisitem) {
-          this.$store.commit('diagnoses/setId', this.diagnoses[i].id,)
-          this.$store.commit('diagnoses/setCharacters', this.diagnoses[i].characters);
-          this.$store.commit('diagnoses/setQuestions', this.diagnoses[i].questions);
-          console.log(this.diagnoses[i].id);
-          console.log(this.diagnoses[i].characters);
-          console.log(this.diagnoses[i].questions);
-        }
-      }
-      this.$router.push('/diagnosis') 
-    },
   }
 }
-
 </script>
 <style>
-.liked {
-  color: palevioletred;
-}
-.unlike {
-  color: skyblue;
-}
 .popular_btn {
   background-color: yellow;
 }

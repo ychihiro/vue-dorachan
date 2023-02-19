@@ -1,7 +1,7 @@
 <template>
 <div v-for="question in filteredQuestions" :key="question">
 Q{{ currentQuestion }}.{{ question.content }}
-<p v-for="choice in filteredChoices" :key="choice.id" @click="choiceBtn(choice)" :class="{choice: choice.isChoiced}">
+<p v-for="choice in filteredChoices" :key="choice.id" @click="choiceBtn(choice, question)" :class="{choice: choice.isChoiced}">
 {{ choice.content }}
 </p>
 </div>
@@ -36,25 +36,7 @@ export default {
       nextBtn: true,
     }
   },
-  watch: {
-    computedResults: {
-      // 選択ボタンを押した時のスタイル切り替え
-      handler: function (val, oldval) {
-        const oldLength = Object.keys(oldval).length
-        const valLength = Object.keys(val).length
-        for (let i = 1; i <= valLength; i++) {
-          val[i].isChoiced = true
-          if (oldLength === valLength) {
-            oldval[oldLength].isChoiced = null
-          }
-        }
-      }
-    },
-  },
   computed: {
-    computedResults() {
-      return Object.assign({}, this.choiceItem)
-    },
     filteredQuestions() {
       return this.questions.filter(question => {
         return question.number === this.currentQuestion;
@@ -67,8 +49,14 @@ export default {
     },
   },
   methods: {
-    choiceBtn(choice) {
+    choiceBtn(choice, question) {
+      this.choices.forEach(element => {
+        if (element.question_id == question.id) {
+          element.isChoiced = null
+        }
+      })
       this.choiceItem[choice.question_id] = choice
+      choice.isChoiced = true
       console.log('choiceItem')
       console.log(this.choiceItem)
       if (this.choiceItem.length === 11) {
@@ -169,8 +157,8 @@ export default {
       console.log('結果')
       console.log(this.result)
       console.log(random)
-      // this.$store.commit('diagnoses/setResults', this.result)
-      // this.$router.push('/result') 
+      this.$store.commit('diagnoses/setResults', this.result)
+      this.$router.push('/result') 
     },
   }
 }
