@@ -37,7 +37,7 @@ export default {
       item.push(this.diagnoses[i].characters);
     }
     this.characters = item.flat(2);
-    // console.log(this.diagnoses)
+    console.log(this.diagnoses)
   },
   data() {
     return {

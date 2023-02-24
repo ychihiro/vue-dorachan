@@ -13,6 +13,7 @@ Q{{ currentQuestion }}.{{ question.content }}
 <script>
 export default {
   mounted() {
+    console.log('テスト')
     console.log(this.questions)
     const choices = [];
     for (let i = 0; i < this.questions.length; i++) {
@@ -87,14 +88,14 @@ export default {
       // console.log(this.choiceItem)
       this.userScore = [...
         this.choiceItem.reduce(
-          (m, value) => m.set(value.item, (m.get(value.item) || 3) + value.score)
+          (m, value) => m.set(value.category, (m.get(value.category) || 3) + value.score)
           , new Map()
-        )].map(([item, score]) => ({ item, score }));
+        )].map(([category, score]) => ({ category, score }));
       // console.log(this.userScore);
       for (let i = 0; i < this.characters.length; i++) {
         this.characters[i]['average'] = 0
         this.userScore.forEach(element => {
-          switch (element.item) {
+          switch (element.category) {
             case 'cooperation':
               if (element.score >= this.characters[i].cooperation) {
                 this.characters[i]['average'] += Math.floor(100 - (element.score - this.characters[i].cooperation) / element.score * 100)

@@ -56,11 +56,11 @@ body {
   margin-bottom: 30px;
 }
 
-input {
+/* input {
   width: 100%;
   height: 30px;
   padding: 5px;
   font-size: 15px;
   border-radius: 5px;
-}
+} */
 </style>
