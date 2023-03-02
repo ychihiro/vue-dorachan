@@ -1,5 +1,5 @@
 <template>
-  <Header/>
+  <!-- <Header/> -->
   
   <!-- <nav> -->
     <!-- <router-link to="/"></router-link>  -->
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import Header from '@/components/Header.vue'
+// import Header from '@/components/Header.vue'
 export default {
   name: 'App',
-  components: {
-    Header
-  }
+  // components: {
+  //   Header
+  // }
 };
 </script>
 
@@ -25,18 +25,13 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  background-color: #3F89CD;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
+    font-size: 18px;
+    line-height:1.5;
+    color: #555;
+    background-color: #3F89CD;
 }
 
 .register {
@@ -55,6 +50,24 @@ body {
   text-align: left;
   margin-bottom: 30px;
 }
+
+.cart-btn {
+  width: 110px;
+  padding: 10px 10px;
+  font-size: 16px;
+  font-weight: normal;
+  text-decoration: none;
+  color:#fff;
+  background-color: #CA8A8A;
+  cursor: pointer;
+  border-radius: 25px;
+  border: 1px solid #CA8A8A;
+}
+
+.cart-btn:hover {
+  font-weight: bold;
+}
+
 
 /* input {
   width: 100%;

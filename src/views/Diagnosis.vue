@@ -5,12 +5,15 @@ Q{{ currentQuestion }}.{{ question.content }}
 {{ choice.content }}
 </p>
 </div>
+<button @click="test">テスト</button>
 <button @click="prevPage" v-show="prevBtn">前へ</button>
 <button @click="nextPage" v-show="nextBtn">次へ</button>
 <button @click="resultBtn" v-show="showResult">診断結果をみる</button>
 </template>
 
 <script>
+import axios from 'axios';
+import firebase from '../main';
 export default {
   mounted() {
     console.log('テスト')
@@ -50,6 +53,11 @@ export default {
     },
   },
   methods: {
+    test() {
+      console.log(this.diagnosisId)
+      console.log(this.userUid)
+      console.log()
+    },
     choiceBtn(choice, question) {
       this.choices.forEach(element => {
         if (element.question_id == question.id) {
@@ -155,11 +163,31 @@ export default {
       } else {
         this.result[0].result = true
       }
-      console.log('結果')
-      console.log(this.result)
-      console.log(random)
+      this.store(this.result);
+      // console.log('結果')
+      // console.log(this.result)
+      // console.log(random)
       this.$store.commit('diagnoses/setResults', this.result)
       this.$router.push('/result') 
+    },
+    store(result) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          axios.post("http://localhost:8000/api/v1/result", {
+            user_id: user.uid,
+            diagnosis_id: result[0].diagnosis_id,
+            character_id: result[0].id,
+          }).then(res => {
+            console.log(res.data);
+          });
+        }
+      })
+      
+      // await axios.post("http://localhost:8000/api/v1/result", {
+      //   user_id: this.userUid,
+      //   diagnosis_id: result[0].diagnosis_id,
+      //   character_id: result[0].diagnosis_id,
+      // });
     },
   }
 }

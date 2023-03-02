@@ -5,6 +5,7 @@ export default {
     characters: [],
     questions: [],
     results: [],
+    carts: []
   },
   getters: {
     
@@ -21,7 +22,10 @@ export default {
     },
     setResults(state, payload) {
       state.results = payload
-    }
+    },
+    setCarts(state, payload) {
+      state.carts = payload
+    },
   },
   actions: {
   },

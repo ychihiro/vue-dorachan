@@ -7,6 +7,8 @@ import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyPage from '../views/MyPage.vue'
 import Addmin from '../views/Addmin.vue'
+import Purchase from '../views/Purchase.vue'
+import Product from '../views/Product.vue'
 
 const routes = [
   {
@@ -54,7 +56,17 @@ const routes = [
     path: '/addmin',
     name: 'addmin',
     component: Addmin
-  }
+  },
+  {
+    path: '/purchase',
+    name: 'purchase',
+    component: Purchase
+  },
+  {
+    path: '/product',
+    name: 'product',
+    component: Product
+  },
 ]
 
 const router = createRouter({

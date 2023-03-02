@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <script src="https://kit.fontawesome.com/2d7196642a.js" crossorigin="anonymous"></script>
-    <!-- built files will be auto injected -->
-  </body>
-</html>
+@charset "UTF-8";
 
-<style>
-  html, body, div, span, object, iframe,
+html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code,
 del, dfn, em, img, ins, kbd, q, samp,
@@ -40,15 +22,8 @@ time, mark, audio, video {
 }
 
 body {
-    font-size: 18px;
-    line-height:1.5;
-    color: #555;
-    background-color: #3F89CD;
+    line-height:1;
 }
-
-h1 { font-size: 35px;}
-
-h2 { font-size: 30px;}
 
 article,aside,details,figcaption,figure,
 footer,header,hgroup,menu,nav,section {
@@ -116,4 +91,3 @@ hr {
 input, select {
     vertical-align:middle;
 }
-</style>

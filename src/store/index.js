@@ -40,7 +40,7 @@ export default createStore({
   plugins: [createPersistedState(
     { 
       key: 'doraApp',
-      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results'],
+      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results', 'diagnoses.carts'],
       storage: window.sessionStorage
     }
   )]

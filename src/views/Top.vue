@@ -1,4 +1,5 @@
 <template>
+  <Header></Header>
   <label>診断名
     <input type="text" v-model="diagnosisKey">
   </label>
@@ -20,10 +21,12 @@
 import axios from 'axios';
 import Diagnosis from '@/components/DiagnosisItem.vue';
 import Like from '@/components/Like.vue';
+import Header from '@/components/Header.vue';
 export default {
   components: {
     'diagnosis-item': Diagnosis,
-    'like-component': Like
+    'like-component': Like,
+    Header
   },
   async mounted() {
     const response = await axios
@@ -98,7 +101,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .popular_btn {
   background-color: yellow;
 }

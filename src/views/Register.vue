@@ -1,4 +1,5 @@
 <template>
+  <Header></Header>
   <div class="register">
 <label class="username">ユーザーネーム
 <input type="text" v-model="userName" placeholder="のび太">
@@ -21,7 +22,11 @@
 <script>
 import axios from 'axios';
 import firebase from 'firebase';
+import Header from '@/components/Header.vue';
 export default {
+  components: {
+    Header,
+  },
   data() {
 return {
   userName: '',

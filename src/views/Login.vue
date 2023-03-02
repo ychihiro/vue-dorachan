@@ -1,4 +1,5 @@
 <template>
+  <Header></Header>
   <div class="login">
     <label>メールアドレス
       <input type="email" v-model="email" placeholder="nobi@nobita.com">
@@ -14,9 +15,13 @@
 // import axios from 'axios';
 import firebase from '../main';
 import firebaseUtils from './../firebaseUtils';
+import Header from '@/components/Header.vue'
 // import { mapActions } from 'vuex';
 
 export default {
+  components: {
+    Header
+  },
   data() {
     return {
       email: '',

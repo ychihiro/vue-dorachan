@@ -1,29 +1,33 @@
 <template>
-  <h2>あなたにそっくりなキャラクターは・・・</h2>
-  <h3>{{ characters[0].name }}</h3>
-  <p>{{ characters[0].path }}</p>
-  <p>{{ characters[0].description }}</p>
-  <p>マッチ度{{ characters[0].average }}％</p>
-  <div v-if="!characters[0].results">
-  おめでとうございます！<br>抽選が当たりました！ステッカーをプレゼントします！<br>
-  <button>住所を入力する</button>
+  <div class="wrapper">
+  <hamburger-menu></hamburger-menu>
+  <my-result></my-result>
+  <div v-if="!characters[0].results" class="sticker-wrapper">
+  <p>おめでとうございます！</p>
+  <p>{{ characters[0].name }}ステッカーを無料でプレゼント！！！</p>
+  <div class="flex-wrapper">
+  <router-link to="/purchase" class="cart-btn">カートを見る</router-link>
+  <router-link to="/product" class="tag">他の商品を見る</router-link>
   </div>
-  <div class="result-wrapper" v-if="show">
+  <!-- <button class="cart-btn">カートを見る</button>
+  <a class="tag">他の商品を見る</a> -->
+  </div>
+  <div class="evalueation-wrapper" v-if="show">
     <h2>評価</h2>
-    <div class="star">
-    <span @click="test(1)" :class="{color: this.star[1]}">
+    <div class="star-wrapper">
+    <span @click="starBtn(1)" class="star" :class="{color: this.count > 0}">
     <i class="fa-solid fa-star a"></i>
     </span>
-    <span @click="test(2)" :class="{ color: this.star[2]}">
+    <span @click="starBtn(2)" class="star" :class="{ color: this.count > 1 }">
     <i class="fa-solid fa-star"></i>
     </span>
-    <span @click="test(3)" :class="{ color: this.star[3] }">
+    <span @click="starBtn(3)" class="star" :class="{ color: this.count > 2 }">
     <i class="fa-solid fa-star"></i>
     </span>
-    <span @click="test(4)" :class="{ color: this.star[4] }">
+    <span @click="starBtn(4)" class="star" :class="{ color: this.count > 3 }">
     <i class="fa-solid fa-star"></i>
     </span>
-    <span @click="test(5)" :class="{ color: this.star[5] }">
+    <span @click="starBtn(5)" class="star" :class="{ color: this.count > 4 }">
     <i class="fa-solid fa-star"></i>
     </span>
     </div>
@@ -31,90 +35,132 @@
     <textarea v-model="comment" class="comment"></textarea>
     <button @click="submit" class="submit">送信</button>
   </div>
+  </div>
+  <!-- <my-menu></my-menu> -->
 </template>
 
 <script>
 import axios from 'axios';
 import firebase from '../main';
+import Result from '@/components/Result.vue';
+// import Menu from '@/components/Menu.vue';
+import Hamburger from '@/components/HamburgerMenu.vue';
 export default {
-  created() {
-      firebase
-        .auth()
-        .onAuthStateChanged(u => {
-          let user = u ? u : {};
-          this.$store.commit('onAuthStateChanged', user);
-          this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-          this.userUid = this.$store.getters.user.uid
-        })
+  components: {
+    'my-result': Result,
+    // 'my-menu': Menu,
+    'hamburger-menu': Hamburger,
   },
-  mounted() {
-    
+  created() {
+    firebase
+      .auth()
+      .onAuthStateChanged(u => {
+        let user = u ? u : {};
+        this.$store.commit('onAuthStateChanged', user);
+        this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
+        this.userUid = this.$store.getters.user.uid
+      })
   },
   data() {
     return {
       userUid: '',
       characters: this.$store.state.diagnoses.results,
-      imagePath: 'ドラミちゃん.jpg',
-      star: [],
+      count: 0,
       comment: '',
       show: true
     }
   },
   methods: {
     async submit() {
-      await axios .post("http://localhost:8000/api/v1/like", {
-        
-      });
+      await axios .post("http://localhost:8000/api/v1/evalueation", {
+        user_id: this.userUid,
+        diagnosis_id: this.characters[0].diagnosis_id,
+        score: this.count,
+        comment: this.comment
+      }).then(res => {
+        console.log(res.data)
+      }
+      );
       console.log(this.userUid)
       console.log(this.characters[0].diagnosis_id)
+      console.log(this.count)
       console.log(this.comment)
-      let count = 0
-      this.star.forEach(element => {
-        if (element) {
-          count++
-        }
-      })
-      console.log(count)
       this.show = null;
     },
-    test(id) {
-      if (!this.star[id]) {
-        console.log('アイテムなし')
-        this.star[id] = id
-        console.log(this.star)
-      }
-      else {
-        console.log(this.star)
-        console.log('アイテムあり')
-        console.log(id)
-        delete this.star[id]
-        console.log(this.star)
-      }
+    starBtn(id) {
+      this.count = 0;
+      this.count += id;
     }
   },
   
 }
 </script>
 
-<style>
-.result-wrapper {
-  background-color: #fff;
-  margin: 60px auto 0px;
-  padding: 5px 10px;
-  width: 70%;
+<style scoped>
+.wrappper {
+  
 }
 
-.star {
-  margin: 0px 20px;
-  font-size: 60px;
+.sticker-wrapper {
+  width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: #D1DA6D;
+  /* background-color: #D1D889; */
+}
+
+.flex-wrapper {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.cart-btn {
+  margin-right: 20px;
+}
+
+
+.tag {
+  margin-right: 70px;
+  color: #CA8A8A;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tag:hover {
+  color: #CA8A8A;
+  border-bottom: 2px solid #CA8A8A;
+}
+
+
+.evalueation-wrapper {
+  background-color: #fff;
+  margin: 60px auto 60px;
+  padding: 5px 10px;
+  width: 60%;
+  border-radius: 10px 10px 130px 130px;
+}
+
+.star-wrapper {
+  margin: 20px 20px;
+  font-size: 70px;
   color: #999;
+}
+
+.star{
+  margin: 0px 10px;
 }
 
 .comment {
   width: 70%;
   height: 60px;
   padding: 10px;
-  font-size: 16px;
+  margin-top: 15px;
+  font-size: 18px;
   border-radius: 10px;
 }
 
@@ -130,6 +176,10 @@ export default {
   cursor: pointer;
   color: #fff;
   background-color: #D1DA6D;
+}
+
+.submit:hover {
+  background-color: #e0eb6f;
 }
 
 .color {
