@@ -10,37 +10,30 @@
     <div class="form-item-post">
     <label class="form-label-post">郵便番号</label>
     <span>〒</span>
-    <input type="number" v-model="firstPost">
-    <span>-</span>
-    <input type="number" v-model="lastPost">
+    <input type="number" v-model="firstZipcode" class="input-zipcode">
+    <span>ー</span>
+    <input type="number" v-model="lastZipcode" class="input-zipcode">
+    <button @click="searchAddress" class="search-address">住所検索</button>
     </div>
-    <div class="form-item-prefecture">
+    <div class="form-item">
       <label class="form-label">都道府県</label>
-      <select v-model="prefecture" class="input-prefecture">
-      <option value="" disabled>選択する</option>
-      </select>
-      
+      <input type="text" v-model="prefecture" class="input-prefecture">
     </div>
     <div class="form-item">
       <label class="form-label">市区町村</label>
       <input type="text" v-model="city" class="input-city">
-      
     </div>
     <div class="form-item">
       <label class="form-label">建物名</label>
       <input type="text" v-model="building" class="input-building">
-      
-    </div>
-    <div class="form-item">
-      <label class="form-label">電話番号</label>
-      <input type="number" v-model="tel" class="input-tel">
     </div>
   </div>
-  <button class="register-btn">登録</button>
+  <button class="register-btn" @click="test">登録</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'Address',
   // props: ['name', 'diagnoses'],
@@ -48,8 +41,8 @@ export default {
     return {
       firstName: '',
       lastName: '',
-      firstPost: '',
-      lastPost: '',
+      firstZipcode: '',
+      lastZipcode: '',
       prefecture: '',
       city: '',
       building: '',
@@ -57,7 +50,17 @@ export default {
     }
   },
   methods: {
-    
+    test() {
+
+    },
+    async searchAddress() {
+      let zipcode = '' + this.firstZipcode + this.lastZipcode;
+      let url = 'http://zipcloud.ibsnet.co.jp/api/search?zipcode=';
+      let result = await axios.get(url + zipcode);
+      let address = result.data.results[0]
+      this.prefecture = address.address1
+      this.city = address.address2 + address.address3
+    }
   },
 }
 
@@ -113,7 +116,8 @@ export default {
 
 .input-city,
 .input-building,
-.input-tel {
+.input-tel,
+.input-prefecture {
   width: 540px;
 }
 
@@ -121,22 +125,23 @@ export default {
   width: 227px;
 }
 
-.input-prefecture {
-  width: 150px;
-  height: 35px;
-  margin-left: 60px;
-  text-align: center;
-  font-size: 18px;
-  border-radius: 5px;
-  background-color: #999;
-}
-
 .input-name,
 .input-city,
 .input-building,
-.input-tel {
+.input-tel,
+.input-prefecture,
+.input-zipcode {
   height: 40px;
   font-size: 18px;
+  padding: 5px 10px;
+  border: 1px solid #999;
+  border-radius: 5px;
+}
+.input-zipcode {
+  width: 100px;
+  margin: 0px 20px;
+}
+.search-address {
   padding: 5px 10px;
   border: 1px solid #999;
   border-radius: 5px;

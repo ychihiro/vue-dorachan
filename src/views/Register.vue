@@ -41,9 +41,10 @@ return {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((userCredential) => {
-          userCredential.user.sendEmailVerification().then(() => {
-            console.log('確認メール送信')
-          });
+          this.sendEmail(this.email)
+          // userCredential.user.sendEmailVerification().then(() => {
+          //   console.log('確認メール送信')
+          // });
           userCredential.user.updateProfile({
             displayName: this.userName
           })
@@ -64,11 +65,21 @@ return {
             .catch((error) => {
               console.log(error);
             })
-            this.$router.push('/login')
+            // this.$router.push('/login')
         })
         // });
-      
     },
+    sendEmail() {
+      const actionUri = {
+        url: 'http://localhost:8080/login'
+      };
+      firebase.auth().languageCode = "ja";
+      const user = firebase.auth().currentUser;
+      user
+        .sendEmailVerification(actionUri)
+        .then(() => alert("認証メールを送りました!"))
+        .catch((e) => console.log(e));
+    }
   },
 };
 </script>

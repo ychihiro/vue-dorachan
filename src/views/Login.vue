@@ -28,21 +28,37 @@ export default {
       password: '',
     };
   },
+  created() {
+    this.test();
+  },
   methods: {
+    test() { 
+      firebase.firestore().collection('admin_user').get()
+        .then ((data) => {
+          console.log(data)
+          console.log('成功')
+        })
+        .catch((error) => {
+            alert('ログインエラー');
+            console.log(error);
+          });
+    },
     // ...mapActions(['setUser']),
     login() {
       if (!this.email || !this.password) {
         alert('メールアドレスまたはパスワードが入力されていません。')
         return
       }
+
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
+        .then((data) => {
           alert('ログインが完了しました')
+          console.log(data.user)
           firebaseUtils.onAuthStateChanged();
           alert('login success');
-          this.$router.push('/');
+          // this.$router.push('/');
         })
         .catch((error) => {
           alert('ログインエラー');

@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import diagnoses from './modules/diagnoses'
+import purchase from './modules/purchase'
 
 export default createStore({
   state: {
@@ -35,12 +36,12 @@ export default createStore({
   // },
   },
   modules: {
-    diagnoses,
+    diagnoses, purchase
   },
   plugins: [createPersistedState(
     { 
       key: 'doraApp',
-      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results', 'diagnoses.carts'],
+      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results', 'diagnoses.carts', 'purchase.firstName', 'purchase.lastName', 'purchase.firstZipcode', 'purchase.lastZipcode', 'purchase.prefecture', 'purchase.city', 'purchase.building', 'purchase.tokenId', 'purchase.date', 'purchase.time'],
       storage: window.sessionStorage
     }
   )]

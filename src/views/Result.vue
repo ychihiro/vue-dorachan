@@ -35,6 +35,7 @@
     <textarea v-model="comment" class="comment"></textarea>
     <button @click="submit" class="submit">送信</button>
   </div>
+  <vue-qrcode :value="url"></vue-qrcode>
   </div>
   <!-- <my-menu></my-menu> -->
 </template>
@@ -42,6 +43,7 @@
 <script>
 import axios from 'axios';
 import firebase from '../main';
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 import Result from '@/components/Result.vue';
 // import Menu from '@/components/Menu.vue';
 import Hamburger from '@/components/HamburgerMenu.vue';
@@ -50,6 +52,7 @@ export default {
     'my-result': Result,
     // 'my-menu': Menu,
     'hamburger-menu': Hamburger,
+    VueQrcode
   },
   created() {
     firebase
@@ -67,7 +70,8 @@ export default {
       characters: this.$store.state.diagnoses.results,
       count: 0,
       comment: '',
-      show: true
+      show: true,
+      url: 'https://drive.google.com/file/d/1uD3hjYvlcieKsxbB72EZVqaIZOmhOKtE/view'
     }
   },
   methods: {

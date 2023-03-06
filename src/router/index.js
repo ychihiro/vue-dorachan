@@ -9,6 +9,10 @@ import MyPage from '../views/MyPage.vue'
 import Addmin from '../views/Addmin.vue'
 import Purchase from '../views/Purchase.vue'
 import Product from '../views/Product.vue'
+import Cart from '../views/Cart.vue'
+import Customer from '../views/CustomerInformation.vue'
+import Comfirm from '../views/Comfirm.vue'
+import store from '@/store/index.js'
 
 const routes = [
   {
@@ -35,7 +39,8 @@ const routes = [
   {
     path: '/thanks',
     name: 'thanks',
-    component: Thanks
+    component: Thanks,
+    meta: { requiresAuth: true }
   },
   {
     path: '/diagnosis',
@@ -50,28 +55,55 @@ const routes = [
   {
     path: '/mypage',
     name: 'mypage',
-    component: MyPage
+    component: MyPage,
+    meta: { requiresAuth: true }
   },
   {
     path: '/addmin',
     name: 'addmin',
-    component: Addmin
+    component: Addmin,
+    meta: { requiresAuth: true }
   },
   {
     path: '/purchase',
     name: 'purchase',
-    component: Purchase
+    component: Purchase,
+    meta: { requiresAuth: true }
   },
   {
     path: '/product',
     name: 'product',
-    component: Product
+    component: Product,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: Cart,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/customer',
+    name: 'customer',
+    component: Customer,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/comfirm',
+    name: 'comfirm',
+    component: Comfirm,
+    meta: { requiresAuth: true }
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
+router.beforeEach(function(to) {
+  if (to.meta.requiresAuth && !store.getters.isLogin) {
+    return { name: 'login' };
+  }
+});
 
 export default router
