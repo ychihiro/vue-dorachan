@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -28,9 +29,13 @@ export default {
     }
   },
   methods: {
-    send() {
-      console.log(this.email);
+    async send() {
       console.log(this.content);
+      await axios.post("http://localhost:8000/api/v1/mail", {
+        content: this.content,
+      }).then(res => {
+        console.log(res.data)
+      });
     }
   },
 }
