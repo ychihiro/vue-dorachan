@@ -1,5 +1,5 @@
 <template>
-  <li @click="clickName">{{ name }}</li>
+  <li @click="clickName" class="item">{{ name }}</li>
 </template>
 
 <script>
@@ -30,7 +30,14 @@ export default {
     },
   },
 }
-  
-    
-
 </script>
+
+<style scoped>
+.item {
+  font-size: 25px;
+}
+.item:hover {
+  color: #CA8A8A;
+  font-weight: bold;
+}
+</style>

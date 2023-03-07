@@ -1,9 +1,9 @@
 <template>
   <div class="header">
-    <router-link to="/register" class="register-btn" v-if="isLogin === false">新規登録</router-link>
-    <router-link to="/login" class="login-btn" v-if="isLogin === false">ログイン</router-link>
-    <router-link to="/logout" class="register-btn" v-if="isLogin === true">ログアウト</router-link>
-    <router-link to="/mypage" class="login-btn" v-if="isLogin === true">マイページ</router-link>
+    <router-link to="/register" class="head-register-btn" v-if="isLogin === false">新規登録</router-link>
+    <router-link to="/login" class="head-login-btn" v-if="isLogin === false">ログイン</router-link>
+    <router-link to="/logout" class="head-register-btn" v-if="isLogin === true">ログアウト</router-link>
+    <router-link to="/mypage" class="head-login-btn" v-if="isLogin === true">マイページ</router-link>
   </div>
 </template>
 
@@ -19,15 +19,8 @@ export default {
 </script>
 
 <style scoped>
-.header {
-  display: flex;
-  justify-content: right;
-  padding: 20px 10px;
-  border: 2px solid #000;
-}
-
-.register-btn,
-.login-btn {
+.head-register-btn,
+.head-login-btn {
   padding: 5px 10px;
   margin-left: 10px;
   border-radius: 15px;

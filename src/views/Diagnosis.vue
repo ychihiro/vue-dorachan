@@ -1,14 +1,27 @@
 <template>
-<div v-for="question in filteredQuestions" :key="question">
-Q{{ currentQuestion }}.{{ question.content }}
-<p v-for="choice in filteredChoices" :key="choice.id" @click="choiceBtn(choice, question)" :class="{choice: choice.isChoiced}">
-{{ choice.content }}
-</p>
-</div>
-<button @click="test">テスト</button>
-<button @click="prevPage" v-show="prevBtn">前へ</button>
-<button @click="nextPage" v-show="nextBtn">次へ</button>
-<button @click="resultBtn" v-show="showResult">診断結果をみる</button>
+  <div class="wrapper">
+    <div class="question-wrapper">
+      <div v-for="question in filteredQuestions" :key="question">
+        <p class="question">
+        Q{{ currentQuestion }}.{{ question.content }}
+        </p>
+        <p v-for="choice in filteredChoices" :key="choice.id" @click="choiceBtn(choice, question)" class="choice" :class="{choice_item: choice.isChoiced}">
+        {{ choice.content }}
+        </p>
+        <div class="btn-wrapper">
+          <a @click="prevPage" v-show="prevBtn" class="back-btn">
+          前へ
+          </a>
+          <a @click="resultBtn" v-show="showResult" class="result-btn">
+          診断結果をみる
+          </a>
+          <a @click="nextPage" v-show="nextBtn" class="next-btn">
+          次へ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -36,7 +49,7 @@ export default {
       result: [],
       showResult: false,
       currentQuestion: 1,
-      prevBtn: false,
+      prevBtn: true,
       nextBtn: true,
     }
   },
@@ -53,11 +66,6 @@ export default {
     },
   },
   methods: {
-    test() {
-      console.log(this.diagnosisId)
-      console.log(this.userUid)
-      console.log()
-    },
     choiceBtn(choice, question) {
       this.choices.forEach(element => {
         if (element.question_id == question.id) {
@@ -73,22 +81,12 @@ export default {
       }
     },
     prevPage() {
-      if (this.currentQuestion === 2) {
-        this.prevBtn = false;
-        this.currentQuestion--;
-      } else {
-        this.prevBtn = true;
-        this.nextBtn = true;
+      if (this.currentQuestion !== 1) {
         this.currentQuestion--;
       }
     },
     nextPage() {
-      if (this.currentQuestion == 9) {
-        this.nextBtn = false;
-        this.currentQuestion++;
-      } else {
-        this.prevBtn = true;
-        this.nextBtn = true;
+      if (this.currentQuestion !== 10) {
         this.currentQuestion++;
       }
     },
@@ -194,8 +192,56 @@ export default {
 
 </script> 
 
-<style>
+<style scoped>
+.wrapper {
+  padding: 170px 0px;
+}
+.question-wrapper {
+  width: 60%;
+  margin: 0 auto;
+  padding: 40px 30px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+.question {
+  margin-bottom: 30px;
+  font-size: 25px;
+}
 .choice {
+  width: 350px;
+  margin: 10px auto;
+  padding: 15px 5px;
+  border: 1px solid #D1DA6D;
+  border-radius: 10px;
+  background-color: #fff;
+}
+.choice_item {
+  color: #fff;
+  font-weight: bold;
   background-color: #D1DA6D;
+}
+.btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+  margin: 40px auto 0px;
+}
+
+.next-btn,
+.back-btn,
+.result-btn {
+  color: #3F89CD;
+}
+.result-btn {
+  border-bottom: 1px solid #3F89CD;
+}
+
+.next-btn:hover,
+.back-btn:hover,
+.result-btn:hover {
+  color: #CA8A8A;
+}
+.result-btn:hover {
+  border-bottom: 1px solid #CA8A8A;
 }
 </style>

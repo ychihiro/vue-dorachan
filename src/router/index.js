@@ -7,12 +7,15 @@ import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyPage from '../views/MyPage.vue'
 import Addmin from '../views/Addmin.vue'
-import Purchase from '../views/Purchase.vue'
 import Product from '../views/Product.vue'
 import Cart from '../views/Cart.vue'
 import Customer from '../views/CustomerInformation.vue'
 import Comfirm from '../views/Comfirm.vue'
+import Mail from '../views/Mail.vue'
 import store from '@/store/index.js'
+import firebase from '../main';
+
+
 
 const routes = [
   {
@@ -65,12 +68,6 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/purchase',
-    name: 'purchase',
-    component: Purchase,
-    meta: { requiresAuth: true }
-  },
-  {
     path: '/product',
     name: 'product',
     component: Product,
@@ -94,16 +91,28 @@ const routes = [
     component: Comfirm,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/mail',
+    name: 'mail',
+    component: Mail,
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 });
-router.beforeEach(function(to) {
-  if (to.meta.requiresAuth && !store.getters.isLogin) {
-    return { name: 'login' };
-  }
+router.beforeEach(function (to) {
+  firebase
+    .auth()
+    .onAuthStateChanged(u => {
+      let user = u ? u : {};
+      store.commit('onAuthStateChanged', user);
+      store.commit('onUserLoginStatusChanged', user.uid ? true : false);
+      if (to.meta.requiresAuth && !store.getters.isLogin) {
+        return { name: 'login' };
+      }
+    });
 });
 
 export default router

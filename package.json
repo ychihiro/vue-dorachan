@@ -15,12 +15,14 @@
     "firebase": "8.6",
     "firebase-tools": "^11.20.0",
     "save": "^2.9.0",
+    "vee-validate": "^4.5.8",
     "vue": "^3.2.47",
     "vue-router": "^4.0.3",
     "vue-star": "^0.0.4",
     "vuex": "^4.0.0",
     "vuex-persistedstate": "^4.1.0",
-    "yubinbango-core2": "^0.6.3"
+    "yubinbango-core2": "^0.6.3",
+    "yup": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

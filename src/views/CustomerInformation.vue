@@ -201,16 +201,16 @@ export default {
   margin: 50px auto 0;
   border: 3px #000 solid;
 }
-.form-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-}
 
 .form-item-post,
 .form-item-prefecture {
   display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.form-item {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
 }
@@ -220,8 +220,6 @@ export default {
   display: block;
   width: 110px;
   padding: 10px;
-  /* height: 40px; */
-  /* font-size: 18px; */
   font-weight: bold;
   color: #fff;
   background-color: #3F89CD;

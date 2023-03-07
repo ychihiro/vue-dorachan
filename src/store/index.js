@@ -9,9 +9,6 @@ export default createStore({
     isLogin: false,
   },
   getters: {
-    // isAuthenticated(state) {
-    //   return !!state.user;
-    // },
     user(state) {
       return state.user;
     },
@@ -20,9 +17,6 @@ export default createStore({
     }
   },
   mutations: {
-    // setUser(state, user) {
-    // state.user = user
-    // },
     onAuthStateChanged(state, user) {
       state.user = user;
     },
@@ -31,9 +25,6 @@ export default createStore({
     }
   },
   actions: {
-  // setUser(context, user) {
-  //   context.commmit('setUser', user)
-  // },
   },
   modules: {
     diagnoses, purchase

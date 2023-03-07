@@ -34,13 +34,20 @@ body {
     background-color: #3F89CD;
 }
 
-.register {
+.header {
+  display: flex;
+  justify-content: right;
+  padding: 20px 10px;
+  /* border: 2px solid #000; */
+}
+
+/* .register {
   background-color: #fff;
   width: 250px;
   padding: 20px 30px;
   margin: 0 auto;
   border-radius: 10px;
-}
+} */
 
 .username,
 .email,
@@ -51,7 +58,11 @@ body {
   margin-bottom: 30px;
 }
 
-.cart-btn {
+.cart-btn,
+.search-btn,
+.login-btn,
+.register-btn,
+.send-btn {
   width: 110px;
   padding: 10px 10px;
   font-size: 16px;
@@ -64,10 +75,20 @@ body {
   border: 1px solid #CA8A8A;
 }
 
-.cart-btn:hover {
+.cart-btn:hover,
+.search-btn:hover,
+.login-btn:hover,
+.register-btn:hover,
+.send-btn:hover {
   font-weight: bold;
 }
 
+.error {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: red;
+}
 
 /* input {
   width: 100%;

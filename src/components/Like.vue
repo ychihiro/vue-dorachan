@@ -1,5 +1,5 @@
 <template>
-  <span @click="goodBtn(diagnosis)">
+  <span @click="goodBtn(diagnosis)" class="heart">
       <i class="fa-solid fa-heart like" :class="{ liked: diagnosis.isliked }"></i>
       {{ diagnosis.count }}
   </span>
@@ -25,26 +25,26 @@ export default {
         let user = u ? u : {};
         this.$store.commit('onAuthStateChanged', user);
         this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-        this.userUid = this.$store.getters.user.uid
-        this.checkedlike(this.userUid)
+        this.userUid = this.$store.getters.user.uid;
+        this.checkedlike(this.userUid);
       })
   },
   methods: {
     async checkedlike(id) {
       const likedItem = await axios.get("http://localhost:8000/api/v1/like");
-      this.diagnosis.count = 0
-      const myFavorite = []
+      this.diagnosis.count = 0;
+      const myFavorite = [];
       likedItem.data.forEach(element => {
         if (element.user_id === id) {
-          myFavorite.push(element)
+          myFavorite.push(element);
         }
         if (element.diagnosis_id === this.diagnosisItem.id) {
-          this.diagnosis.count++
+          this.diagnosis.count++;
         }
       })
       myFavorite.forEach(element => {
         if (element.diagnosis_id === this.diagnosis.id) {
-          this.diagnosis.isliked = true
+          this.diagnosis.isliked = true;
         }
       })
     },
@@ -53,8 +53,8 @@ export default {
         diagnosis.isliked = null;
         this.unlike(diagnosis);
       } else {
-        diagnosis.isliked = true
-        this.like(diagnosis)
+        diagnosis.isliked = true;
+        this.like(diagnosis);
       }
     },
     async like(diagnosis) {
@@ -65,7 +65,7 @@ export default {
       });
     },
     async unlike(diagnosis) {
-      diagnosis.count--
+      diagnosis.count--;
       await axios.delete("http://localhost:8000/api/v1/like/" + diagnosis.id, {
         data: { user_id: this.userUid }
       });
@@ -76,14 +76,13 @@ export default {
 
 <style scoped>
 .liked {
+  font-size: 26px;
   color: palevioletred;
 }
 
-.unlike {
-  color: skyblue;
+.heart {
+  font-size: 25px;
+  color: #999;
 }
 
-.popular_btn {
-  background-color: yellow;
-}
 </style>
