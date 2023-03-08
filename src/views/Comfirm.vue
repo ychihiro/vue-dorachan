@@ -68,7 +68,7 @@ export default {
   },
   data() {
     return {
-      cartItem: this.$store.state.diagnoses.carts,
+      cartItem: this.$store.state.purchase.carts,
       firstName: this.$store.state.purchase.firstName,
       lastName: this.$store.state.purchase.lastName,
       firstZipcode: this.$store.state.purchase.firstZipcode,
@@ -100,6 +100,7 @@ export default {
           .then((response) => {
             console.log(response);
             alert('やったね！');
+            this.$store.commit('purchase/reset');
           });
         }
       })

@@ -1,33 +1,20 @@
 <template>
   <h1 class="ttl">あなたにそっくりなキャラクターは・・・</h1>
     <div class="img-wrapper">
-    <img v-if="image" :src="'http://localhost:8000/storage/' + image" alt="ドラミちゃん" class="img">
+    <img v-if="character.path" :src="'http://localhost:8000/storage/' + character.path" alt="ドラミちゃん" class="img">
     </div>
-    <h2 class="name">{{ characters[0].name }}</h2>
-    <p class="description">{{ characters[0].description }}</p>
-    <p class="percent">マッチ度{{ characters[0].average }}％</p>
+    <h2 class="name">{{ character.name }}</h2>
+    <p class="description">{{ character.description }}</p>
+    <p v-if="character.average" class="percent">マッチ度{{ character.average }}％</p>
 </template>
 
 <script>
-import firebase from '../main';
 export default {
   name: 'Result',
-  // props: ['name', 'diagnoses'],
-  created() {
-    firebase
-      .auth()
-      .onAuthStateChanged(u => {
-        let user = u ? u : {};
-        this.$store.commit('onAuthStateChanged', user);
-        this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-        this.userUid = this.$store.getters.user.uid
-      })
-  },
+  props: ['character'],
   data() {
     return {
-      userUid: '',
-      characters: this.$store.state.diagnoses.results,
-      image: this.$store.state.diagnoses.results[0].path,
+      
     }
   },
   methods: {

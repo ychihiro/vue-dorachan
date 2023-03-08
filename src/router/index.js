@@ -5,8 +5,10 @@ import Login from '../views/Login.vue'
 import Thanks from '../views/Thanks.vue'
 import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
+import MyResult from '../views/MyResult.vue'
 import MyPage from '../views/MyPage.vue'
 import Addmin from '../views/Addmin.vue'
+import DetailProduct from '../views/DetailProduct.vue'
 import Product from '../views/Product.vue'
 import Cart from '../views/Cart.vue'
 import Customer from '../views/CustomerInformation.vue'
@@ -56,6 +58,11 @@ const routes = [
     component: Result
   },
   {
+    path: '/my-result',
+    name: 'my-result',
+    component: MyResult
+  },
+  {
     path: '/mypage',
     name: 'mypage',
     component: MyPage,
@@ -65,6 +72,12 @@ const routes = [
     path: '/addmin',
     name: 'addmin',
     component: Addmin,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/detail',
+    name: 'detail',
+    component: DetailProduct,
     meta: { requiresAuth: true }
   },
   {

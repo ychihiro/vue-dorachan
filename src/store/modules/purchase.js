@@ -1,6 +1,7 @@
-export default {
-  namespaced: true,
-  state: {
+function getDefaultState() {
+  return {
+    carts: [],
+    quantity: [],
     firstName: '',
     lastName: '',
     firstZipcode: '',
@@ -11,11 +12,34 @@ export default {
     date: '',
     time: '',
     tokenId: '',
-  },
+  }
+}
+
+export default {
+  namespaced: true,
+  state: getDefaultState,
+  // state: {
+  //   firstName: '',
+  //   lastName: '',
+  //   firstZipcode: '',
+  //   lastZipcode: '',
+  //   prefecture: '',
+  //   city: '',
+  //   building: '',
+  //   date: '',
+  //   time: '',
+  //   tokenId: '',
+  // },
   getters: {
     
   },
   mutations: {
+    setCarts(state, payload) {
+      state.carts = payload
+    },
+    setQuantity(state, payload) {
+      state.quantity = payload
+    },
     setFirstName(state, payload) {
       state.firstName = payload;
     },
@@ -45,6 +69,9 @@ export default {
     },
     setTime(state, payload) {
       state.time = payload;
+    },
+    reset(state) {
+      Object.assign(state, getDefaultState())
     },
   },
   actions: {

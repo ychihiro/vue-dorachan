@@ -37,6 +37,8 @@ export default {
     }
     this.choices = choices.flat(2);
     console.log(this.choices)
+    console.log('どうだだ')
+    console.log(this.$store.state.diagnoses.name)
   },
   data() {
     return {
@@ -169,6 +171,8 @@ export default {
       this.$router.push('/result') 
     },
     store(result) {
+      console.log('て')
+      console.log(result)
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           axios.post("http://localhost:8000/api/v1/result", {
@@ -180,12 +184,6 @@ export default {
           });
         }
       })
-      
-      // await axios.post("http://localhost:8000/api/v1/result", {
-      //   user_id: this.userUid,
-      //   diagnosis_id: result[0].diagnosis_id,
-      //   character_id: result[0].diagnosis_id,
-      // });
     },
   }
 }

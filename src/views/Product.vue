@@ -16,7 +16,7 @@
       <p>{{ item.name }}</p>
       <div class="inner-detail">
         <p class="price">¥{{ item.price }}(税込)</p>
-        <select v-model="quantity[index]" @change="count(item, this.quantity[index])">
+        <select v-model="quantity[index]" @change="count(item, index, this.quantity[index])">
           <template v-for="number in 11" :key="number">
           <option :value="number - 1">{{ number - 1 }}</option>
           </template>
@@ -24,6 +24,8 @@
       </div>
     </div>
     <p>{{ quantity }}</p>
+    <p>{{ this.cartItem }}</p>
+    <button @click="hint">リセット</button>
   </div>
   </div>
   </div>
@@ -42,27 +44,65 @@ export default {
       }
     })
     // console.log(this.items)
+    console.log('カート')
+    console.log(this.$store.state.purchase.carts)
+    console.log('数')
+    console.log(this.$store.state.purchase.quantity)
+    // let test = this.$store.state.purchase.quantity
+    // for (let i = 0; i < test.length; i++) {
+    //   if (test[i] !== '') {
+    //     console.log(test[i])
+    //   }
+    // }
+    // console.log('チャレンジ')
+    // console.log(this.cartItem)
   },
   data() {
     return {
+      
       diagnosisId: this.$store.state.diagnoses.results[0].diagnosis_id,
       items: [],
-      quantity: [],
+      cartItem: [],
+      test:[],
+      // quantity: [],
     }
   },
+  computed: {
+    quantity: {
+      get() {
+        return this.$store.state.purchase.quantity;
+      },
+      set(value) {
+        this.$store.commit('purchase/setQuantity', value)
+      }
+    },
+  },
   methods: {
-    count(item, number) {
+    count(item, index, number) {
       item.count = number
+      console.log(item)
+      console.log(index)
+      this.cartItem[index] = item;
+      // this.$store.commit('purchase/setCarts', item)
+      console.log('test')
+      console.log(this.cartItem)
+      console.log(this.$store.state.purchase.carts)
     },
     carts() {
-      let carts = [];
-      this.items.forEach(element => {
-        if (element.count > 0) {
-          carts.push(element);
-        }
-      })
-      this.$store.commit('diagnoses/setCarts', carts)
-      this.$router.push('/purchase')
+      // this.items.forEach(element => {
+      //   if (element.count > 0) {
+      //     this.cartItem.push(element);
+      //   }
+      // })
+      // this.$store.commit('purchase/setCarts', this.cartItem)
+      this.$store.commit('purchase/setCarts', this.cartItem)
+      // this.$store.commit('purchase/setQuantity', this.quantity)
+      this.$router.push('/cart')
+      console.log(this.$store.state.purchase.carts)
+      // this.$store.commit('diagnoses/setId', item[i].id,)
+    },
+    hint() {
+      this.$store.commit('purchase/reset');
     }
 
   },

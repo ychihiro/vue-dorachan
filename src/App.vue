@@ -62,7 +62,8 @@ body {
 .search-btn,
 .login-btn,
 .register-btn,
-.send-btn {
+.send-btn,
+.home-btn {
   width: 110px;
   padding: 10px 10px;
   font-size: 16px;
@@ -79,7 +80,8 @@ body {
 .search-btn:hover,
 .login-btn:hover,
 .register-btn:hover,
-.send-btn:hover {
+.send-btn:hover,
+.home-btn:hover {
   font-weight: bold;
 }
 

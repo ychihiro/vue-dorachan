@@ -7,7 +7,7 @@
         <th>数量</th>
         <th>小計</th>
       </tr>
-      <template v-for="item in cartItem" :key="item">
+      <template v-for="item in newItem" :key="item">
         <tr>
           <td class="image">
             <img :src="'http://localhost:8000/storage/' + item.path" :alt="item.name" class="item-img">
@@ -41,26 +41,45 @@ export default {
   components: {
     'item-component': StepItem
   },
+  mounted() {
+    console.log('カートページ')
+    console.log(this.$store.state.purchase.carts)
+    let a = this.$store.state.purchase.carts.filter(Boolean)
+    console.log(this.newItem)
+    this.newItem = a.filter(element => {
+        return element.count !== 0
+      })
+    this.$store.commit('purchase/setCarts', this.newItem);
+  },
   data() {
     return {
-      cartItem: this.$store.state.diagnoses.carts,
+      cartItem: this.$store.state.purchase.carts,
+      newItem: []
     }
   },
   methods: {
     plus(id) {
-      this.cartItem.forEach(element => {
+      this.newItem.forEach(element => {
         if (id === element.id && element.count < 10) {
           element.count += 1;
-          this.$store.commit('diagnoses/setCarts', this.cartItem);
+          this.$store.commit('purchase/setCarts', this.newItem);
         }
       });
     },
     minus(id) {
-      // let zero = '';
-      this.cartItem.forEach( function(element) {
+      console.log(id)
+      this.newItem.forEach( element => {
         if (id === element.id && element.count > 0) {
           element.count -= 1;
-          this.$store.commit('diagnoses/setCarts', this.cartItem);
+          this.$store.commit('purchase/setCarts', this.newItem);
+          // if (element.count === 0) {
+          //   console.log(element)
+          //   const a = this.newItem.indexOf(element)
+          //   console.log(a)
+          //   delete this.newItem[a]
+          //   this.$store.commit('purchase/setCarts', this.newItem);
+          //   console.log(this.newItem)
+          // }
         } 
       });
     },

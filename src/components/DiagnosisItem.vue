@@ -14,11 +14,10 @@ export default {
   methods: {
     clickName() {
       const item = this.diagnosesItem
-      console.log(item)
       for (let i = 0; i < item.length; i++) {
         if (item[i].name === this.name) {
           console.log(item[i])
-          this.$store.commit('diagnoses/setId', item[i].id,)
+          this.$store.commit('diagnoses/setId', item[i].id)
           this.$store.commit('diagnoses/setCharacters', item[i].characters);
           this.$store.commit('diagnoses/setQuestions', item[i].questions);
           console.log(item[i].id);
@@ -26,7 +25,7 @@ export default {
           console.log(item[i].questions);
         }
       }
-      this.$router.push('/diagnosis') 
+      this.$router.push('/diagnosis');
     },
   },
 }
@@ -40,4 +39,5 @@ export default {
   color: #CA8A8A;
   font-weight: bold;
 }
+
 </style>

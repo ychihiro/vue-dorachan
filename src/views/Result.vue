@@ -1,16 +1,15 @@
 <template>
   <div class="wrapper">
   <hamburger-menu></hamburger-menu>
-  <my-result></my-result>
+  <my-result :character="characters[0]"></my-result>
   <div v-if="!characters[0].results" class="sticker-wrapper">
   <p>おめでとうございます！</p>
   <p>{{ characters[0].name }}ステッカーを無料でプレゼント！！！</p>
-  <div class="flex-wrapper">
-  <router-link to="/purchase" class="cart-btn">カートを見る</router-link>
+  <!-- <div class="flex-wrapper"> -->
+  <button @click="present" class="cart-btn">ステッカーを受け取る</button>
+  <!-- <router-link to="/detail">ステッカーを受け取る</router-link> -->
   <router-link to="/product" class="tag">他の商品を見る</router-link>
-  </div>
-  <!-- <button class="cart-btn">カートを見る</button>
-  <a class="tag">他の商品を見る</a> -->
+  <!-- </div> -->
   </div>
   <div class="evalueation-wrapper" v-if="show">
     <h2>評価</h2>
@@ -75,6 +74,18 @@ export default {
     }
   },
   methods: {
+    async present() {
+      console.log('あ')
+      const stickerName = this.characters[0].name + 'ステッカー'
+      const response = await axios
+        .get("http://localhost:8000/api/v1/purchase");
+          response.data.filter(element => {
+        if (element.diagnosis_id === this.characters[0].diagnosis_id && element.name == stickerName) {
+          console.log(element)
+        }
+      })
+      // this.$router.push('/login');
+    },
     async submit() {
       await axios .post("http://localhost:8000/api/v1/evalueation", {
         user_id: this.userUid,
@@ -104,7 +115,6 @@ export default {
 .wrappper {
   
 }
-
 .sticker-wrapper {
   width: 500px;
   margin: 30px auto;
@@ -114,19 +124,16 @@ export default {
   background-color: #D1DA6D;
   /* background-color: #D1D889; */
 }
-
 .flex-wrapper {
   display: flex;
   justify-content: right;
   align-items: center;
   margin-top: 20px;
 }
-
 .cart-btn {
+  width: 210px;
   margin-right: 20px;
 }
-
-
 .tag {
   margin-right: 70px;
   color: #CA8A8A;
@@ -134,13 +141,10 @@ export default {
   cursor: pointer;
   text-decoration: none;
 }
-
 .tag:hover {
   color: #CA8A8A;
   border-bottom: 2px solid #CA8A8A;
 }
-
-
 .evalueation-wrapper {
   background-color: #fff;
   margin: 60px auto 60px;
@@ -148,17 +152,14 @@ export default {
   width: 60%;
   border-radius: 10px 10px 130px 130px;
 }
-
 .star-wrapper {
   margin: 20px 20px;
   font-size: 70px;
   color: #999;
 }
-
 .star{
   margin: 0px 10px;
 }
-
 .comment {
   width: 70%;
   height: 60px;
@@ -167,7 +168,6 @@ export default {
   font-size: 18px;
   border-radius: 10px;
 }
-
 .submit {
   display: block;
   margin: 20px auto;
@@ -181,11 +181,9 @@ export default {
   color: #fff;
   background-color: #D1DA6D;
 }
-
 .submit:hover {
   background-color: #e0eb6f;
 }
-
 .color {
   color: #D1DA6D;
 }

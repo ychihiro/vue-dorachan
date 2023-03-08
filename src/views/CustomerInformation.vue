@@ -11,22 +11,23 @@
       <div class="form-item-post">
       <label class="form-label-post">郵便番号</label>
       <span>〒</span>
-      <input type="number" v-model="firstZipcode" class="input-zipcode">
+      <input type="number" v-model="firstZipcode" placeholder="179" class="input-zipcode">
       <span>ー</span>
-      <input type="number" v-model="lastZipcode" class="input-zipcode">
+      <input type="number" v-model="lastZipcode" placeholder="0076
+      " class="input-zipcode">
       <button @click="searchAddress" class="search-address">住所検索</button>
       </div>
       <div class="form-item">
         <label class="form-label">都道府県</label>
-        <input type="text" v-model="prefecture" class="input-prefecture">
+        <input type="text" v-model="prefecture" placeholder="東京都" class="input-prefecture">
       </div>
       <div class="form-item">
         <label class="form-label">市区町村</label>
-        <input type="text" v-model="city" class="input-city">
+        <input type="text" v-model="city" placeholder="練馬区月見台すすきが原" class="input-city">
       </div>
       <div class="form-item">
         <label class="form-label">建物名</label>
-        <input type="text" v-model="building" class="input-building">
+        <input type="text" v-model="building" placeholder="3-10-5" class="input-building">
       </div>
     </div>
     <div class="form-wrapper">
@@ -37,15 +38,25 @@
       </div>
       <div class="form-item">
         <label class="form-label">配達希望時間</label>
-        <input type="time" v-model="time" class="input-time">
+        <input type="time" v-model="time" class="input-time" list="data-list">
+        <datalist id="data-list">
+          <option value="08:00"></option>
+          <option value="10:00"></option>
+          <option value="12:00"></option>
+          <option value="14:00"></option>
+          <option value="16:00"></option>
+          <option value="18:00"></option>
+          <option value="20:00"></option>
+        </datalist>
       </div>
     </div>
     <div class="form-wrapper">
-      <h2>クレジットカード情報入力</h2>
+      <h2 class="card-ttl">クレジットカード情報入力</h2>
       <div class="container">
       <div id="card-element">
       </div>
       <button @click="register">カード情報を登録する</button>
+      <p v-if="isActive">登録済み</p>
     </div>
     </div>
     <div class="next-btn-wrap">
@@ -70,14 +81,13 @@ export default {
       stripe: window.Stripe('pk_test_51MhDWaIyOIzAJ2a5mH4EtBdCebBr8GDdnnN51dg7XZiLi32UDcJ517Wf5n5XiIYDxqyhSXZ0UFnHUd0Hx5GYlyst00FraPX1Qt'),
       show_result: false,
       result_message: "",
-      detetime: ''
-      // cartItem: this.$store.state.diagnoses.carts,
-      // price:[]
+      detetime: '',
+      isActive: false
     }
   },
   mounted() {
     const elements = this.stripe.elements();
-    this.card = elements.create("card");
+    this.card = elements.create("card", { hidePostalCode: true });
     this.card.mount("#card-element");
 
     var hiduke = new Date();
@@ -281,5 +291,8 @@ export default {
 .cart-btn {
   background-color: #D1DA6D;
   border: 1px solid #D1DA6D;
+}
+.card-ttl {
+  margin-bottom: 40px;
 }
 </style>
