@@ -1,6 +1,7 @@
 function getDefaultState() {
   return {
     carts: [],
+    presentItem: '',
     quantity: [],
     firstName: '',
     lastName: '',
@@ -34,6 +35,9 @@ export default {
     
   },
   mutations: {
+    setPresentItem(state, payload) {
+      state.presentItem = payload
+    },
     setCarts(state, payload) {
       state.carts = payload
     },

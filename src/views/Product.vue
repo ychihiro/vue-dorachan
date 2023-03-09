@@ -1,13 +1,11 @@
 <template>
   <div class="wrapper">
   <div class="head-wrapper">
-  <router-link to="/result" class="tag">戻る</router-link>
+  <router-link to="/result" class="tag">カートに戻る</router-link>
   <h1 class="ttl">商品一覧</h1>
-  <button @click="carts" class="cart-btn">カートを見る</button>
-  <!-- <router-link to="/purchase" class="cart-btn"></router-link> -->
   </div>
   <div class="grid-wrap">
-  <div v-for="(item, index) in items" :key="item">
+  <div v-for="item in items" :key="item" @click="cart(item)">
   <div class="grid-box">
   <div class="img-wrapper">
   <img :src="'http://localhost:8000/storage/' + item.path" alt="">
@@ -16,16 +14,8 @@
       <p>{{ item.name }}</p>
       <div class="inner-detail">
         <p class="price">¥{{ item.price }}(税込)</p>
-        <select v-model="quantity[index]" @change="count(item, index, this.quantity[index])">
-          <template v-for="number in 11" :key="number">
-          <option :value="number - 1">{{ number - 1 }}</option>
-          </template>
-        </select>
       </div>
     </div>
-    <p>{{ quantity }}</p>
-    <p>{{ this.cartItem }}</p>
-    <button @click="hint">リセット</button>
   </div>
   </div>
   </div>
@@ -46,16 +36,6 @@ export default {
     // console.log(this.items)
     console.log('カート')
     console.log(this.$store.state.purchase.carts)
-    console.log('数')
-    console.log(this.$store.state.purchase.quantity)
-    // let test = this.$store.state.purchase.quantity
-    // for (let i = 0; i < test.length; i++) {
-    //   if (test[i] !== '') {
-    //     console.log(test[i])
-    //   }
-    // }
-    // console.log('チャレンジ')
-    // console.log(this.cartItem)
   },
   data() {
     return {
@@ -67,44 +47,12 @@ export default {
       // quantity: [],
     }
   },
-  computed: {
-    quantity: {
-      get() {
-        return this.$store.state.purchase.quantity;
-      },
-      set(value) {
-        this.$store.commit('purchase/setQuantity', value)
-      }
-    },
-  },
   methods: {
-    count(item, index, number) {
-      item.count = number
+    cart(item) {
       console.log(item)
-      console.log(index)
-      this.cartItem[index] = item;
-      // this.$store.commit('purchase/setCarts', item)
-      console.log('test')
-      console.log(this.cartItem)
-      console.log(this.$store.state.purchase.carts)
-    },
-    carts() {
-      // this.items.forEach(element => {
-      //   if (element.count > 0) {
-      //     this.cartItem.push(element);
-      //   }
-      // })
-      // this.$store.commit('purchase/setCarts', this.cartItem)
-      this.$store.commit('purchase/setCarts', this.cartItem)
-      // this.$store.commit('purchase/setQuantity', this.quantity)
-      this.$router.push('/cart')
-      console.log(this.$store.state.purchase.carts)
-      // this.$store.commit('diagnoses/setId', item[i].id,)
-    },
-    hint() {
-      this.$store.commit('purchase/reset');
+      this.$store.commit('purchase/setCarts', item)
+      this.$router.push('/detail');
     }
-
   },
 }
 </script>

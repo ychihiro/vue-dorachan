@@ -1,91 +1,99 @@
 <template>
   <div class="wrapper">
     <item-component></item-component>
-    <table class="cart-table">
-      <tr class="header-row">
-        <th colspan="2">商品内容</th>
-        <th>数量</th>
-        <th>小計</th>
-      </tr>
-      <template v-for="item in newItem" :key="item">
+    <div>
+      <table>
         <tr>
-          <td class="image">
-            <img :src="'http://localhost:8000/storage/' + item.path" :alt="item.name" class="item-img">
-          </td>
-          <table class="sub-table">
-            <tr>
-              <td class="name">{{ item.name }}</td>
-            </tr>
-            <td class="price">
-              ￥{{ item.price }}(税込)
-              <div class="btn-wrapper">
-                <button class="plus" @click="plus(item.id)">＋</button>
-                <button class="minus" @click="minus(item.id)">ー</button>
-              </div>
-            </td>
-          </table>
-          <td class="count">{{ item.count }}</td>
-          <td class="total">￥{{ item.price * item.count }}(税込)</td>
+          <th>商品名</th>
+          <th>値段</th>
+          <th>個数</th>
+          <th>小計</th>
+          <th>削除</th>
         </tr>
-      </template>
-    </table>
-    <div class="next-btn-wrap">
-      <router-link to="/customer" class="cart-btn">次へ</router-link>
+        <template v-for="item in products" :key="item">
+        <tr v-if="item.count">
+          <td>{{ item.name }}</td>
+          <td>{{ item.price }}</td>
+          <td>
+          <p>{{ item.count }}</p>
+          <button @click="plus(item)">＋</button>
+          <button @click="minus(item)">ー</button>
+          </td>
+          <td>{{ item.price * item.count }}</td>
+          <td>
+          <button @click="remove(item)">×</button>
+          </td>
+        </tr>
+        </template>
+      </table>
+    </div>
+    <div class="btn-wrapper">
+      <router-link to="/product">買い物を続ける</router-link>
+      <router-link to="/customer">次へ</router-link>
+      <!-- <button>次へ</button> -->
     </div>
   </div>
 </template>
 
 <script>
 import StepItem from '@/components/StepItem.vue';
+import axios from 'axios';
+
 export default {
   components: {
     'item-component': StepItem
   },
-  mounted() {
-    console.log('カートページ')
-    console.log(this.$store.state.purchase.carts)
-    let a = this.$store.state.purchase.carts.filter(Boolean)
-    console.log(this.newItem)
-    this.newItem = a.filter(element => {
-        return element.count !== 0
+  async mounted() {
+    const cartBox = await axios
+      .get("http://localhost:8000/api/v1/cart");
+    const productItem = await axios
+      .get("http://localhost:8000/api/v1/purchase");
+      productItem.data.filter(element => {
+        if (element.diagnosis_id === this.diagnosisId) {
+        this.products.push(element);
+      }
       })
-    this.$store.commit('purchase/setCarts', this.newItem);
+    this.products.forEach(element => {
+      element.count = 0;
+      cartBox.data.forEach(value => {
+        
+        if (element.id === value.product_id) {
+          element.count++;
+          element.cartId = value.id
+        }
+      })
+    })
+    console.log(this.products);
   },
   data() {
     return {
-      cartItem: this.$store.state.purchase.carts,
-      newItem: []
+      diagnosisId: this.$store.state.diagnoses.results[0].diagnosis_id,
+      // items: [],
+      products: [],
+      // userUid: ''
     }
   },
   methods: {
-    plus(id) {
-      this.newItem.forEach(element => {
-        if (id === element.id && element.count < 10) {
-          element.count += 1;
-          this.$store.commit('purchase/setCarts', this.newItem);
-        }
+    async plus(item) {
+      console.log(this.userUid)
+      await axios.post("http://localhost:8000/api/v1/cart", {
+        product_id: item.id
       });
+      item.count++;
     },
-    minus(id) {
-      console.log(id)
-      this.newItem.forEach( element => {
-        if (id === element.id && element.count > 0) {
-          element.count -= 1;
-          this.$store.commit('purchase/setCarts', this.newItem);
-          // if (element.count === 0) {
-          //   console.log(element)
-          //   const a = this.newItem.indexOf(element)
-          //   console.log(a)
-          //   delete this.newItem[a]
-          //   this.$store.commit('purchase/setCarts', this.newItem);
-          //   console.log(this.newItem)
-          // }
-        } 
-      });
+    async minus(item) {
+      await axios.delete("http://localhost:8000/api/v1/cart/" + item.id);
+      item.count--;
     },
+    async remove(item) {
+      await axios.delete("http://localhost:8000/api/v1/purchase/" + item.id);
+      item.count = 0;      
+    }
   },
 }
 </script>
+
+
 
 <style scoped>
 .wrapper {
@@ -109,6 +117,7 @@ export default {
 .total {
   border-right: 1px solid #999;
 }
+
 .cart-table {
   border-collapse: separate;
   width: 70%;
@@ -169,18 +178,20 @@ export default {
 .minus:hover {
   border: 2px solid #999;
 }
+
 .minus {
   margin-left: 10px;
 }
+
 .next-btn-wrap {
   width: 90%;
   margin: 80px auto;
   text-align: right;
   /* background-color: pink; */
 }
+
 .cart-btn {
   padding: 12px 40px;
   background-color: #D1DA6D;
   border: 1px solid #D1DA6D;
-}
-</style>
+}</style>

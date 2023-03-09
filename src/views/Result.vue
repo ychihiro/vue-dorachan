@@ -75,16 +75,16 @@ export default {
   },
   methods: {
     async present() {
-      console.log('あ')
       const stickerName = this.characters[0].name + 'ステッカー'
       const response = await axios
         .get("http://localhost:8000/api/v1/purchase");
-          response.data.filter(element => {
+      response.data.filter(element => {
         if (element.diagnosis_id === this.characters[0].diagnosis_id && element.name == stickerName) {
-          console.log(element)
+          this.$store.commit('purchase/setCarts', element)
+          this.$store.commit('purchase/setPresentItem', 1)
         }
-      })
-      // this.$router.push('/login');
+      });
+      this.$router.push('/detail');
     },
     async submit() {
       await axios .post("http://localhost:8000/api/v1/evalueation", {

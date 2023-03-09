@@ -1,9 +1,12 @@
 <template>
   <div class="wrapper">
       <item-component></item-component>
-      <template v-for="(item, index) in cartItem" :key="item">
-        <p class="number">商品{{ index + 1 }}</p>
+       <template v-for="item in products" :key="item">
+          <template v-if="item.count">
+        <!-- <p class="number">商品{{ index + 1 }}</p> -->
+        <div>
         <table class="cart-table">
+        
           <tr>
             <td class="label">商品名</td>
             <td class="content name">{{ item.name }}</td>
@@ -13,16 +16,23 @@
             <td class="content">{{ item.count }}</td>
           </tr>
           <tr>
-            <td class="label">小計</td>
+            <td class="label">価格</td>
             <td class="content">￥{{ item.price }}</td>
           </tr>
           <tr>
-            <td class="label">合計</td>
+            <td class="label">小計</td>
             <td class="content total">￥{{ item.price * item.count }}</td>
           </tr>
+          
         </table>
+        </div>
+        </template>
       </template>
-      <p class="payment">￥{{ price }}</p>
+      
+      <p class="payment">
+      <span v-if="present">-500円</span>
+      合計￥{{ price }}
+      </p>
       <h2>お届け先</h2>
       <table class="cart-table">
         <tr>
@@ -54,6 +64,7 @@
         <router-link to="/customer" class="cart-btn">戻る</router-link>
         <button @click="pay" class="pay-btn">購入する</button>
       </div>
+      <button @click="test">テスt</button>
   </div>
 
 </template>
@@ -62,13 +73,16 @@
 import axios from 'axios';
 import firebase from '../main';
 import StepItem from '@/components/StepItem.vue';
+// import store from '@/store';
 export default {
   components: {
     'item-component': StepItem
   },
   data() {
     return {
-      cartItem: this.$store.state.purchase.carts,
+      present: this.$store.state.purchase.presentItem,
+      diagnosisId: this.$store.state.diagnoses.results[0].diagnosis_id,
+      products: [],
       firstName: this.$store.state.purchase.firstName,
       lastName: this.$store.state.purchase.lastName,
       firstZipcode: this.$store.state.purchase.firstZipcode,
@@ -82,28 +96,115 @@ export default {
       tokenId: this.$store.state.purchase.tokenId
     }
   },
-  mounted() {
-    this.cartItem.forEach(element => {
-      this.price = this.price + element.count * element.price;
-    })
+  async mounted() {
+      const cartBox = await axios
+        .get("http://localhost:8000/api/v1/cart");
+      const productItem = await axios
+        .get("http://localhost:8000/api/v1/purchase");
+      productItem.data.filter(element => {
+        if (element.diagnosis_id === this.diagnosisId) {
+          this.products.push(element);
+        }
+      })
+      this.products.forEach(element => {
+        element.count = 0;
+        cartBox.data.forEach(value => {
+
+          if (element.id === value.product_id) {
+            element.count++;
+            element.cartId = value.id
+            if (element.count !== 0 && !this.ele) {
+              this.price += element.price;
+          }
+          }
+          
+        })
+      })
+    if (this.present) {
+      this.price -= 500;
+    }
+      console.log(this.products)
+    console.log(this.present)
+    // this.cartItem.forEach(element => {
+    //   this.price = this.price + element.count * element.price;
+    // })
   },
   methods: {
     pay() {
+      const store = this.$store.state.purchase;
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-        axios
-          .post("http://localhost:8000/api/v1/payment", {
-            stripeToken: this.tokenId,
-            email: user.email,
-            amount: this.price
-          })
-          .then((response) => {
-            console.log(response);
-            alert('やったね！');
-            this.$store.commit('purchase/reset');
+            axios
+              .post("http://localhost:8000/api/v1/payment", {
+                stripeToken: this.tokenId,
+                email: user.email,
+                amount: this.price
+              })
+              .then((response) => {
+                console.log(response);
+                alert('やったね！');
+                this.$store.commit('purchase/reset');
+              });
+          this.products.forEach(element => {
+            if (element.count !== 0) {
+              console.log(element.id)
+              axios.post("http://localhost:8000/api/v1/customer", {
+                user_id: user.uid,
+                fullname: store.firstName + store.lastName,
+                postcode: store.firstZipcode + '' + store.lastZipcode,
+                prefecture: store.prefecture,
+                city: store.city,
+                building_name: store.building,
+                delivery_date: store.date,
+                delivery_time: store.delivery_time,
+                product_id: element.id,
+                count: element.count
+              }).then(() => {
+                console.log('成功');
+              });
+            }
           });
+          // this.$router.push('/comfirm');
         }
-      })
+        });
+      
+      // firebase.auth().onAuthStateChanged((user) => {
+      //   if (user) {
+      //   axios
+      //     .post("http://localhost:8000/api/v1/payment", {
+      //       stripeToken: this.tokenId,
+      //       email: user.email,
+      //       amount: this.price
+      //     })
+      //     .then((response) => {
+      //       console.log(response);
+      //       alert('やったね！');
+      //       // this.$store.commit('purchase/reset');
+      //     });
+      //   }
+      // })
+      // firebase.auth().onAuthStateChanged((user) => {
+      //   if (user) {
+      //     axios.post("http://localhost:8000/api/v1/customer", {
+      //       user_id: user.uid,
+      //       fullname: store.firstName + store.lastName,
+      //       postcode: store.firstZipcode + '' + store.lastZipcode,
+      //       prefecture: store.prefecture,
+      //       city: store.city,
+      //       building_name: store.building,
+      //       delivery_date: store.date,
+      //       delivery_time: store.delivery_time,
+      //     }).then(() => {
+      //       console.log('成功1');
+      //       // this.$router.push('/cart');
+      //     });
+      //   }
+      //   })
+    
+    },
+    test() {
+      // const storess = this.$store.state.purchase;
+      // console.log(storess.firstZipcode + '' + storess.lastZipcode)
     }
   },
 }
