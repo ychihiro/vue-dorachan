@@ -13,6 +13,7 @@ function getDefaultState() {
     date: '',
     time: '',
     tokenId: '',
+    myItemDetails: []
   }
 }
 
@@ -73,6 +74,9 @@ export default {
     },
     setTime(state, payload) {
       state.time = payload;
+    },
+    setMyItemDetails(state, payload) {
+      state.myItemDetails = payload;
     },
     reset(state) {
       Object.assign(state, getDefaultState())

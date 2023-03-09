@@ -86,7 +86,7 @@ export default {
       item.count--;
     },
     async remove(item) {
-      await axios.delete("http://localhost:8000/api/v1/purchase/" + item.id);
+      await axios.delete("http://localhost:8000/api/v1/cart/delete" + item.id);
       item.count = 0;      
     }
   },

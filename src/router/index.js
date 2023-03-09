@@ -6,6 +6,7 @@ import Thanks from '../views/Thanks.vue'
 import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyResult from '../views/MyResult.vue'
+import MyDetail from '../views/MyDetail.vue'
 import MyPage from '../views/MyPage.vue'
 import Addmin from '../views/Addmin.vue'
 import DetailProduct from '../views/DetailProduct.vue'
@@ -66,6 +67,12 @@ const routes = [
     path: '/mypage',
     name: 'mypage',
     component: MyPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my-detail',
+    name: 'my-detail',
+    component: MyDetail,
     meta: { requiresAuth: true }
   },
   {

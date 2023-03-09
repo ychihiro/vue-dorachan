@@ -33,10 +33,7 @@
               <td>
                 <p>{{ result[0].name }}</p>
                 <button @click="resultPage(result[0].characters[0])">結果を見る</button>
-                
-
               </td>
-              
             </tr>
             </template>
           </table>
@@ -46,12 +43,15 @@
             <tr>
               <th>購入詳細</th>
             </tr>
+            <template v-for="product in products" :key="product">
             <tr>
+              
               <td>
-                <p>ドラえもんステッカー</p>
-                <button>詳細を見る</button> 
+                <p>{{ product.product.name }}</p>
+                <button @click="detailPage(product)">詳細を見る</button> 
               </td>
             </tr>
+            </template>
           </table>
         </div>
       </div>
@@ -81,17 +81,18 @@ export default {
           this.likedItem = res.data.data
         });
         axios.get("http://localhost:8000/api/v1/result/" + this.userUid).then((res) => {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           this.results = res.data.data;
         });
+        axios.get("http://localhost:8000/api/v1/purchase/" + this.userUid).then((res) => {
+          console.log(res.data.data[0])
+          this.products = res.data.data[0];
+        })
       });
-      
-    // firebaseUtils.onAuthStateChanged();
   },
   components: {
     'diagnosis-item': Diagnosis,
     'like-component': Like,
-    // 'my-result': Result,
   },
   mounted() {
   },
@@ -103,7 +104,7 @@ export default {
       results: [],
       diagnosis: [],
       characters: [],
-      test: []
+      products: [],
     }
   },
   methods: {
@@ -111,6 +112,11 @@ export default {
       console.log(item)
       this.$store.commit('diagnoses/setMyResults', item);
       this.$router.push('/my-result');
+    },
+    detailPage(item) {
+      console.log(item)
+      this.$store.commit('purchase/setMyItemDetails', item)
+      this.$router.push('/my-detail');
     }
   },
 }
