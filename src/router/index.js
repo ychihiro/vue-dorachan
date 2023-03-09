@@ -8,15 +8,15 @@ import Result from '../views/Result.vue'
 import MyResult from '../views/MyResult.vue'
 import MyDetail from '../views/MyDetail.vue'
 import MyPage from '../views/MyPage.vue'
-import Addmin from '../views/Addmin.vue'
+import CreateDiagnosis from '../views/CreateDiagnosis.vue'
 import DetailProduct from '../views/DetailProduct.vue'
 import Product from '../views/Product.vue'
 import Cart from '../views/Cart.vue'
 import Customer from '../views/CustomerInformation.vue'
 import Comfirm from '../views/Comfirm.vue'
-import Mail from '../views/Mail.vue'
+import Addmin from '../views/Addmin.vue'
 import store from '@/store/index.js'
-import firebase from '../main';
+// import firebase from '../main';
 
 
 
@@ -34,7 +34,14 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: Login,
+    beforeEnter(to, from, next) {
+      if (store.state.isLogin) {
+        next('/');
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/logout',
@@ -79,7 +86,13 @@ const routes = [
     path: '/addmin',
     name: 'addmin',
     component: Addmin,
-    meta: { requiresAuth: true }
+    beforeEnter(to, from, next) {
+      if (!store.state.addminUser) {
+        next('/')
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/detail',
@@ -112,9 +125,16 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/mail',
-    name: 'mail',
-    component: Mail,
+    path: '/create',
+    name: 'create',
+    component: CreateDiagnosis,
+    beforeEnter(to, from, next) {
+      if (!store.state.createUser) {
+        next('/');
+      } else {
+        next();
+      }
+    }
   },
 ]
 
@@ -122,17 +142,12 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 });
+
+
 router.beforeEach(function (to) {
-  firebase
-    .auth()
-    .onAuthStateChanged(u => {
-      let user = u ? u : {};
-      store.commit('onAuthStateChanged', user);
-      store.commit('onUserLoginStatusChanged', user.uid ? true : false);
-      if (to.meta.requiresAuth && !store.getters.isLogin) {
+  if (to.meta.requiresAuth && !store.state.isLogin) {
         return { name: 'login' };
-      }
-    });
+  }
 });
 
 export default router

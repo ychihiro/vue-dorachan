@@ -62,6 +62,7 @@ export default {
       item.push(this.diagnoses[i].characters);
     }
     this.characters = item.flat(2);
+    console.log(this.$store.getters.isLogin)
     // console.log(this.diagnoses)
   },
   data() {

@@ -11,13 +11,14 @@
         <ErrorMessage name="password" class="error"/>
       </Form>
       <button @click="login" class="login-btn">ログイン</button>
+      <button @click="test">テスト</button>
     </div>
   </div>
 </template>
 
 <script>
 import firebase from '../main';
-import firebaseUtils from './../firebaseUtils';
+// import firebaseUtils from './../firebaseUtils';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import * as yup from "yup";
 import Header from '@/components/Header.vue';
@@ -40,14 +41,18 @@ export default {
   },
   methods: {
     test() {
-      firebase.firestore().collection('admin_user').get()
+      firebase.firestore().collection('create_diagnosis_user').get()
         .then((snap) => {
           const array = [];
           snap.forEach(doc => {
             array.push([doc.data(), doc.id]);
           });
-          this.test2 = array
-          console.log(this.test2)
+          let test2 = array
+          console.log(test2)
+          console.log(test2[0])
+          test2.forEach(element => {
+            console.log(element[0].uid)
+          })
         })
         .catch((error) => {
           alert('ログインエラー');
@@ -64,8 +69,43 @@ export default {
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
-            firebaseUtils.onAuthStateChanged();
-            console.log('成功')
+            firebase
+              .auth()
+              .onAuthStateChanged(u => {
+                let user = u ? u : {};
+                this.$store.commit('onAuthStateChanged', user);
+                this.$store.commit('onUserLoginStatusChanged', user.uid ? true : false);
+                firebase.firestore().collection('admin_user').get()
+                  .then((snap) => {
+                    const array = [];
+                    snap.forEach(doc => {
+                      array.push([doc.data(), doc.id]);
+                    });
+                    const addmin = array
+                    // console.log(this.test2)
+                    addmin.forEach(element => {
+                      console.log(element[0].uid)
+                      console.log(user.uid)
+                      if (element[0].uid == user.uid) {
+                        this.$store.commit('onUserAddminStatusChanged', true);
+                      }
+                    });
+                  });
+                firebase.firestore().collection('create_diagnosis_user').get().then((snap) => {
+                    const array = [];
+                    snap.forEach(doc => {
+                      array.push([doc.data(), doc.id]);
+                    });
+                    const createUser = array
+                    createUser.forEach(element => {
+                      console.log(element[0].uid)
+                      console.log(user.uid)
+                      if (element[0].uid == user.uid) {
+                        this.$store.commit('onUserCreateStatusChanged', true);
+                      }
+                    });
+                  })
+              });
             this.$router.push('/');
           })
           .catch((error) => {

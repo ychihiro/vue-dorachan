@@ -3,11 +3,21 @@ import createPersistedState from 'vuex-persistedstate'
 import diagnoses from './modules/diagnoses'
 import purchase from './modules/purchase'
 
-export default createStore({
-  state: {
+function getDefaultState() {
+  return {
     user: {},
     isLogin: false,
-  },
+    addminUser: false,
+    createUser: false,
+  }
+}
+
+export default createStore({
+  state: getDefaultState,
+  // state: {
+  //   user: {},
+  //   isLogin: false,
+  // },
   getters: {
     user(state) {
       return state.user;
@@ -22,7 +32,16 @@ export default createStore({
     },
     onUserLoginStatusChanged(state, isLogin) {
       state.isLogin = isLogin;
-    }
+    },
+    onUserAddminStatusChanged(state, addminUser) {
+      state.addminUser = addminUser;
+    },
+    onUserCreateStatusChanged(state, createUser) {
+      state.createUser = createUser;
+    },
+    reset(state) {
+      Object.assign(state, getDefaultState())
+    },
   },
   actions: {
   },
@@ -32,7 +51,7 @@ export default createStore({
   plugins: [createPersistedState(
     { 
       key: 'doraApp',
-      paths: ['diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results', 'diagnoses.myResults', 'purchase.presentItem', 'present.carts', 'purchase.firstName', 'purchase.lastName', 'purchase.firstZipcode', 'purchase.lastZipcode', 'purchase.prefecture', 'purchase.city', 'purchase.building', 'purchase.tokenId', 'purchase.date', 'purchase.time', 'purchase.myItemDetails'],
+      paths: ['isLogin', 'addminUser', 'createUser','diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.results', 'diagnoses.myResults', 'purchase.presentItem', 'present.carts', 'purchase.firstName', 'purchase.lastName', 'purchase.firstZipcode', 'purchase.lastZipcode', 'purchase.prefecture', 'purchase.city', 'purchase.building', 'purchase.tokenId', 'purchase.date', 'purchase.time', 'purchase.myItemDetails'],
       storage: window.sessionStorage
     }
   )]

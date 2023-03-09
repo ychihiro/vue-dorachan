@@ -26,7 +26,7 @@ export default {
     setMyResults(state, payload) {
       state.myResults = payload
     },
-
+    
   },
   actions: {
   },
