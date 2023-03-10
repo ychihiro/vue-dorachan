@@ -21,7 +21,7 @@ import firebase from '../main';
 // import firebaseUtils from './../firebaseUtils';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import * as yup from "yup";
-import Header from '@/components/Header.vue';
+import Header from '@/components/HeaderSecond.vue';
 
 export default {
   components: {

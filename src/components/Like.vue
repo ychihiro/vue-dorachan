@@ -49,13 +49,16 @@ export default {
       })
     },
     goodBtn(diagnosis) {
-      if (diagnosis.isliked) {
-        diagnosis.isliked = null;
-        this.unlike(diagnosis);
-      } else {
-        diagnosis.isliked = true;
-        this.like(diagnosis);
+      if (this.$store.state.isLogin) {
+        if (diagnosis.isliked) {
+          diagnosis.isliked = null;
+          this.unlike(diagnosis);
+        } else {
+          diagnosis.isliked = true;
+          this.like(diagnosis);
+        }
       }
+      
     },
     async like(diagnosis) {
       diagnosis.count++

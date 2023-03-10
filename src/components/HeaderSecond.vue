@@ -1,9 +1,7 @@
 <template>
   <div class="header">
-    <router-link to="/register" class="head-btn" v-if="isLogin === false">新規登録</router-link>
-    <router-link to="/login" class="head-btn" v-if="isLogin === false">ログイン</router-link>
-    <router-link to="/logout" @click="logout" class="head-btn" v-if="isLogin === true">ログアウト</router-link>
-    <router-link to="/mypage" class="head-btn" v-if="isLogin === true">マイページ</router-link>
+    <router-link to="/" class="head-btn">ホーム</router-link>
+    <router-link to="/product" class="head-btn" v-if="isLogin === true">商品を見る</router-link>
   </div>
 </template>
 
@@ -11,7 +9,7 @@
 import firebase from '../main';
 
 export default {
-  name: 'Header',
+  name: 'HeaderSecond',
   computed: {
     isLogin() {
       return this.$store.getters.isLogin;

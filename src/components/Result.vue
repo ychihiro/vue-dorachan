@@ -1,7 +1,7 @@
 <template>
   <h1 class="ttl">あなたにそっくりなキャラクターは・・・</h1>
     <div class="img-wrapper">
-    <img v-if="character.path" :src="'http://localhost:8000/storage/' + character.path" alt="ドラミちゃん" class="img">
+    <img v-if="character.path" :src="'http://localhost:8000/storage/' + character.path" alt="ステッカー画像" class="img">
     </div>
     <h2 class="name">{{ character.name }}</h2>
     <p class="description">{{ character.description }}</p>

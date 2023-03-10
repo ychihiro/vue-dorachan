@@ -1,15 +1,13 @@
 <template>
+  <Header></Header>
   <div class="wrapper">
-  <hamburger-menu></hamburger-menu>
   <my-result :character="characters[0]"></my-result>
-  <div v-if="!characters[0].results" class="sticker-wrapper">
+  <router-link to="/share" class="share">結果をシェア</router-link>
+  <div v-if="characters[0].results" class="sticker-wrapper">
   <p>おめでとうございます！</p>
   <p>{{ characters[0].name }}ステッカーを無料でプレゼント！！！</p>
-  <!-- <div class="flex-wrapper"> -->
   <button @click="present" class="cart-btn">ステッカーを受け取る</button>
-  <!-- <router-link to="/detail">ステッカーを受け取る</router-link> -->
-  <router-link to="/product" class="tag">他の商品を見る</router-link>
-  <!-- </div> -->
+  <!-- <router-link to="/product" class="tag">他の商品を見る</router-link> -->
   </div>
   <div class="evalueation-wrapper" v-if="show">
     <h2>評価</h2>
@@ -34,24 +32,19 @@
     <textarea v-model="comment" class="comment"></textarea>
     <button @click="submit" class="submit">送信</button>
   </div>
-  <vue-qrcode :value="url"></vue-qrcode>
   </div>
-  <!-- <my-menu></my-menu> -->
+  
 </template>
 
 <script>
 import axios from 'axios';
 import firebase from '../main';
-import VueQrcode from "@chenfengyuan/vue-qrcode";
 import Result from '@/components/Result.vue';
-// import Menu from '@/components/Menu.vue';
-import Hamburger from '@/components/HamburgerMenu.vue';
+import Header from '@/components/HeaderSecond.vue';
 export default {
   components: {
     'my-result': Result,
-    // 'my-menu': Menu,
-    'hamburger-menu': Hamburger,
-    VueQrcode
+    Header
   },
   created() {
     firebase
@@ -63,6 +56,12 @@ export default {
         this.userUid = this.$store.getters.user.uid
       })
   },
+  mounted() {
+    if (!this.$store.state.isLogin || this.$store.state.diagnoses.evalueation) {
+      this.show = false;
+    } 
+    console.log(this.characters)
+  },
   data() {
     return {
       userUid: '',
@@ -70,7 +69,6 @@ export default {
       count: 0,
       comment: '',
       show: true,
-      url: 'https://drive.google.com/file/d/1uD3hjYvlcieKsxbB72EZVqaIZOmhOKtE/view'
     }
   },
   methods: {
@@ -93,7 +91,8 @@ export default {
         score: this.count,
         comment: this.comment
       }).then(res => {
-        console.log(res.data)
+        this.$store.commit('diagnoses/setEvalueation', true);
+        console.log(res.data);
       }
       );
       console.log(this.userUid)
@@ -134,7 +133,7 @@ export default {
   width: 210px;
   margin-right: 20px;
 }
-.tag {
+/* .tag {
   margin-right: 70px;
   color: #CA8A8A;
   font-size: 12px;
@@ -144,6 +143,16 @@ export default {
 .tag:hover {
   color: #CA8A8A;
   border-bottom: 2px solid #CA8A8A;
+} */
+.share {
+  display: block;
+  color: #CA8A8A;
+  font-weight: bold;
+  text-decoration: none;
+  margin-top: 15px;
+}
+.share:hover {
+  text-decoration-line: underline;
 }
 .evalueation-wrapper {
   background-color: #fff;

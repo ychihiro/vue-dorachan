@@ -21,7 +21,7 @@
 <script>
 import axios from 'axios';
 import firebase from 'firebase';
-import Header from '@/components/Header.vue';
+import Header from '@/components/HeaderSecond.vue';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import * as yup from "yup";
 

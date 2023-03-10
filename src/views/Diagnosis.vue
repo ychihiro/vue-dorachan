@@ -149,21 +149,19 @@ export default {
       console.log(this.characters)
       const max = Math.max.apply(null, this.characters.map(function (o) { return o.average })
       );
-      // console.log('最大:' + max)
-      // this.characters.forEach(element => {
-      //   console.log(element.average)
-      // })
       this.result = this.characters.filter(character => {
         return character.average === max
-      })
+      });
       // const random = Math.floor(Math.random() * 11);
-      const random = Math.floor(Math.random() * 2);
-      if (random === 0) {
-        this.result[0].result = false
-      } else {
-        this.result[0].result = true
+      if (this.$store.state.isLogin) {
+        const random = Math.floor(Math.random() * 2);
+        if (random === 0) {
+          this.result[0].result = false
+        } else {
+          this.result[0].result = true
+        }
+        this.store(this.result);
       }
-      this.store(this.result);
       // console.log('結果')
       // console.log(this.result)
       // console.log(random)
@@ -171,8 +169,7 @@ export default {
       this.$router.push('/result') 
     },
     store(result) {
-      console.log('て')
-      console.log(result)
+      // console.log(result)
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           axios.post("http://localhost:8000/api/v1/result", {

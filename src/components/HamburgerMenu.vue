@@ -16,6 +16,7 @@ export default {
   },
   methods: {
     toggle() {
+      this.$router.push('/menu');
       this.isActive = !this.isActive
     }
   }

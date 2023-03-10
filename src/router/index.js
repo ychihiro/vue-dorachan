@@ -3,6 +3,7 @@ import Top from '../views/Top.vue'
 import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
 import Thanks from '../views/Thanks.vue'
+import Share from '../views/ShareResult.vue'
 import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyResult from '../views/MyResult.vue'
@@ -54,6 +55,11 @@ const routes = [
     name: 'thanks',
     component: Thanks,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/share',
+    name: 'share',
+    component: Share,
   },
   {
     path: '/diagnosis',

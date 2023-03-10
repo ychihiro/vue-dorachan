@@ -1,20 +1,24 @@
 <template>
   <div class="header">
-    <router-link to="/register" class="head-btn" v-if="isLogin === false">新規登録</router-link>
-    <router-link to="/login" class="head-btn" v-if="isLogin === false">ログイン</router-link>
-    <router-link to="/logout" @click="logout" class="head-btn" v-if="isLogin === true">ログアウト</router-link>
-    <router-link to="/mypage" class="head-btn" v-if="isLogin === true">マイページ</router-link>
+    <router-link to="/result" class="head-btn">戻る</router-link>
+  </div>
+  <div class="wrapper">
+  <VueQrcode :value="url" :options="{ width: 300 }"></VueQrcode>
+  <p class="description">QRコードから結果が見れるよ！チェックしてみよう！</p>
   </div>
 </template>
 
 <script>
 import firebase from '../main';
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 export default {
-  name: 'Header',
-  computed: {
-    isLogin() {
-      return this.$store.getters.isLogin;
+  components: {
+    VueQrcode,
+  },
+  data() {
+    return {
+      url: 'http://localhost:8080/result'
     }
   },
   methods: {
@@ -41,5 +45,13 @@ export default {
   margin-left: 10px;
   background-color: #D1DA6D;
   border: 1px solid #D1DA6D;
+}
+.wrapper {
+  padding: 150px;
+}
+.description {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #fff;
 }
 </style>
