@@ -12,14 +12,6 @@ function getDefaultState() {
 export default {
   namespaced: true,
   state: getDefaultState,
-  // state: {
-  //   id: '',
-  //   characters: [],
-  //   questions: [],
-  //   evalueation: false,
-  //   results: [],
-  //   myResults: [] 
-  // },
   getters: {
     
   },
@@ -45,9 +37,5 @@ export default {
     reset(state) {
       Object.assign(state, getDefaultState())
     },
-  },
-  actions: {
-  },
-  modules: {
   },
 }

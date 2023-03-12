@@ -2,7 +2,6 @@ function getDefaultState() {
   return {
     carts: [],
     presentItem: '',
-    // quantity: [],
     firstName: '',
     lastName: '',
     zipcode: '',
@@ -19,18 +18,6 @@ function getDefaultState() {
 export default {
   namespaced: true,
   state: getDefaultState,
-  // state: {
-  //   firstName: '',
-  //   lastName: '',
-  //   firstZipcode: '',
-  //   lastZipcode: '',
-  //   prefecture: '',
-  //   city: '',
-  //   building: '',
-  //   date: '',
-  //   time: '',
-  //   tokenId: '',
-  // },
   getters: {
     
   },
@@ -41,9 +28,6 @@ export default {
     setCarts(state, payload) {
       state.carts = payload
     },
-    // setQuantity(state, payload) {
-    //   state.quantity = payload
-    // },
     setFirstName(state, payload) {
       state.firstName = payload;
     },
@@ -77,9 +61,5 @@ export default {
     reset(state) {
       Object.assign(state, getDefaultState())
     },
-  },
-  actions: {
-  },
-  modules: {
   },
 }
