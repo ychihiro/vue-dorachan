@@ -10,14 +10,7 @@
 <script>
 export default {
   name: 'Character',
-  props: ['name', 'path', 'description'],
-  emits: ['update:name', 'update:path', 'update:description'],
-  data() {
-    return {
-    }
-  },
-  mounted() {
-
-  }
+  props: ['name', 'description'],
+  emits: ['update:name', 'update:description'],
 }
 </script>

@@ -82,10 +82,8 @@ export default {
   font-size: 26px;
   color: palevioletred;
 }
-
 .heart {
   font-size: 25px;
   color: #999;
 }
-
 </style>

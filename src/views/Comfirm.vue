@@ -1,9 +1,11 @@
 <template>
+  <Header></Header>
   <div class="wrapper">
-      <item-component></item-component>
+      <step-component :number="number"></step-component>
         <template v-for="item in products" :key="item">
           <template v-if="item.count">
         <div>
+        <h2 class="ttl">カート商品</h2>
         <table class="cart-table">
         
           <tr>
@@ -26,11 +28,12 @@
         </div>
         </template>
       </template>
-      <p class="payment">
-      <span v-if="present">-500円</span>
-      合計￥{{ price }}
+      <div class="price-wrapper">
+      <p class="present" v-if="present">-500円</p>
+      <p class="payment">合計￥{{ price }}
       </p>
-      <h2>お届け先</h2>
+      </div>
+      <h2 class="ttl">お届け先</h2>
       <table class="cart-table">
         <tr>
           <td class="label">名前</td>
@@ -38,14 +41,14 @@
         </tr>
         <tr>
           <td class="label">郵便番号</td>
-          <td class="content">{{ firstZipcode + '-' + lastZipcode }}</td>
+          <td class="content">{{ zipcode }}</td>
         </tr>
         <tr>
           <td class="address-label">住所</td>
           <td class="content address">{{ prefecture + city + building}}</td>
         </tr>
       </table>
-      <h2>お届け日時</h2>
+      <h2 class="ttl">お届け日時</h2>
       <table class="cart-table">
         <tr>
           <td class="label">希望日時</td>
@@ -56,11 +59,15 @@
           <td class="content time">{{ time }}</td>
         </tr>
       </table>
-      <p>{{ tokenId }}</p>
       <div class="next-btn-wrap">
         <router-link to="/customer" class="cart-btn">戻る</router-link>
         <button @click="pay" class="pay-btn">購入する</button>
       </div>
+      <p v-if="cardError" class="error">
+      クレジットカード情報が取得できませんでした</p>
+      <p v-if="showError" class="error">
+      入力内容に誤りがあります
+      </p>
   </div>
 </template>
 
@@ -68,10 +75,12 @@
 import axios from 'axios';
 import firebase from '../main';
 import StepItem from '@/components/StepItem.vue';
+import Header from '@/components/SubHeader.vue';
 
 export default {
   components: {
-    'item-component': StepItem
+    'step-component': StepItem,
+    Header
   },
   data() {
     return {
@@ -80,85 +89,85 @@ export default {
       products: [],
       firstName: this.$store.state.purchase.firstName,
       lastName: this.$store.state.purchase.lastName,
-      firstZipcode: this.$store.state.purchase.firstZipcode,
-      lastZipcode: this.$store.state.purchase.lastZipcode,
+      zipcode: this.$store.state.purchase.zipcode,
       prefecture: this.$store.state.purchase.prefecture,
       city: this.$store.state.purchase.city,
       building: this.$store.state.purchase.building,
       date: this.$store.state.purchase.date,
       time: this.$store.state.purchase.time,
       price: 0,
-      tokenId: this.$store.state.purchase.tokenId
+      tokenId: this.$store.state.purchase.tokenId,
+      number: 3,
+      cardError: false,
+      showError: false
     }
   },
   async mounted() {
-      const cartBox = await axios
-        .get("http://localhost:8000/api/v1/cart");
-      const productItem = await axios
-        .get("http://localhost:8000/api/v1/purchase");
+      const cartBox = await axios.get("http://localhost:8000/api/v1/cart");
+      const productItem = await axios.get("http://localhost:8000/api/v1/purchase");
       productItem.data.filter(element => {
         if (element.diagnosis_id === this.diagnosisId) {
           this.products.push(element);
         }
       })
-      this.products.forEach(element => {
-        element.count = 0;
-        cartBox.data.forEach(value => {
-
-          if (element.id === value.product_id) {
-            element.count++;
-            element.cartId = value.id
-            if (element.count !== 0 && !this.ele) {
-              this.price += element.price;
+    this.products.forEach(element => {
+      element.count = 0;
+      cartBox.data.forEach(value => {
+        if (element.id === value.product_id) {
+          element.count++;
+          element.cartId = value.id;
+          if (element.count !== 0 && !this.ele) {
+            this.price += element.price;
           }
-          }
-          
-        })
-      })
+        }
+      });
+    });
     if (this.present) {
       this.price -= 500;
     }
-    // console.log(this.products)
-    // console.log(this.present)
   },
   methods: {
-    pay() {
-      const store = this.$store.state.purchase;
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            axios
-              .post("http://localhost:8000/api/v1/payment", {
+    async pay() {
+      if (this.firstName !== '' && this.lastName !== '' && this.zipcode !== '' && this.prefecture !== '' && this.city !== '' && this.city.length <= 255 && this.tokenId !== '') {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            axios.post("http://localhost:8000/api/v1/payment", {
                 stripeToken: this.tokenId,
                 email: user.email,
                 amount: this.price
-              })
-              .then((response) => {
-                console.log(response);
-                alert('やったね！');
-                this.$store.commit('purchase/reset');
               });
-          this.products.forEach(element => {
-            if (element.count !== 0) {
-              console.log(element.id)
-              axios.post("http://localhost:8000/api/v1/customer", {
-                user_id: user.uid,
-                product_id: element.id,
-                fullname: store.firstName + store.lastName,
-                postcode: store.firstZipcode + '' + store.lastZipcode,
-                prefecture: store.prefecture,
-                city: store.city,
-                building_name: store.building,
-                delivery_date: store.date,
-                delivery_time: store.delivery_time,
-                count: element.count
-              }).then(() => {
-                console.log('成功');
-              });
-            }
-          });
-          // this.$router.push('/comfirm');
-        }
+            this.products.forEach(element => {
+              if (element.count !== 0) {
+                axios.post("http://localhost:8000/api/v1/purchase", {
+                  user_id: user.uid,
+                  product_id: element.id,
+                  fullname: this.firstName + this.lastName,
+                  postcode: this.zipcode,
+                  prefecture: this.prefecture,
+                  city: this.city,
+                  building_name: this.building,
+                  delivery_date: this.date,
+                  delivery_time: this.time,
+                  count: element.count
+                }).then(() => {
+                  this.$router.push('/thanks');
+                  this.$store.commit('purchase/reset');
+                  this.$store.commit('diagnoses/reset');
+                });
+              }
+            });
+          }
         });
+      } else if (!this.tokenId) {
+        this.cardError = true;
+      } else {
+        this.showError = true;
+      }
+      const cartBox = await axios
+        .get("http://localhost:8000/api/v1/cart");
+      cartBox.data.forEach(element => {
+        axios.delete("http://localhost:8000/api/v1/cart/" + element.product_id);
+      });
     },
   },
 }
@@ -173,7 +182,6 @@ export default {
   border-collapse: separate;
   width: 60%;
   margin: 0 auto;
-  /* background-color: pink; */
 }
 .number {
   margin: 40px 0px 20px;
@@ -181,13 +189,12 @@ export default {
 .label,
 .address-label {
   width: 200px;
-  padding: 15px;
+  padding: 20px 15px;
   color: #fff;
   background-color: #3F89CD;
 }
 .content {
   border-right: 1px solid #999;
-  /* border-top: 1px solid #999; */
 }
 .name,
 .date {
@@ -205,19 +212,31 @@ export default {
   padding: 20px;
 }
 .payment {
-  width: 60%;
-  /* padding: 10px; */
-  margin: 30px auto;
   font-size: 25px;
   font-weight: bold;
-  text-align: right;
-  background-color: pink;
+}
+.present {
+  font-size: 20px;
+  margin-right: 100px;
+}
+.price-wrapper {
+  display: flex;
+  justify-content: right;
+  margin: 0 auto;
+  width: 55%;
+  padding: 40px 40px 10px;
+  align-items: center;
+  color: #CA8A8A;
+  border-bottom: 1px solid #999;
+}
+.ttl {
+  margin: 50px 0px 20px;
 }
 .next-btn-wrap {
   display: flex;
   justify-content: space-between;
   width: 90%;
-  margin: 80px auto;
+  margin: 80px auto 40px;
 }
 .cart-btn,
 .pay-btn {
@@ -235,5 +254,14 @@ export default {
 }
 .pay-btn:hover {
   font-weight: bold;
+}
+
+@media screen and (max-width:768px) {
+  .cart-table {
+    width: 80%;
+  }
+  .pay-btn {
+    margin-right: 230px;
+  }
 }
 </style>

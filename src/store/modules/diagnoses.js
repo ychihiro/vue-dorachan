@@ -1,13 +1,25 @@
-export default {
-  namespaced: true,
-  state: {
+function getDefaultState() {
+  return {
     id: '',
     characters: [],
     questions: [],
     evalueation: false,
     results: [],
     myResults: [] 
-  },
+  }
+}
+
+export default {
+  namespaced: true,
+  state: getDefaultState,
+  // state: {
+  //   id: '',
+  //   characters: [],
+  //   questions: [],
+  //   evalueation: false,
+  //   results: [],
+  //   myResults: [] 
+  // },
   getters: {
     
   },
@@ -30,7 +42,9 @@ export default {
     setMyResults(state, payload) {
       state.myResults = payload
     },
-    
+    reset(state) {
+      Object.assign(state, getDefaultState())
+    },
   },
   actions: {
   },

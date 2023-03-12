@@ -1,81 +1,88 @@
 <template>
+  <Header></Header>
   <div class="wrapper">
-    <item-component></item-component>
-    <div>
-      <table>
-        <tr>
-          <th>商品名</th>
-          <th>値段</th>
-          <th>個数</th>
-          <th>小計</th>
-          <th>削除</th>
+    <item-component :number="number"></item-component>
+      <table class="cart-table">
+        <tr class="row">
+          <th class="label">商品名</th>
+          <th class="label">値段</th>
+          <th class="label">個数</th>
+          <th class="label">小計</th>
+          <th class="label">削除</th>
         </tr>
         <template v-for="item in products" :key="item">
-        <tr v-if="item.count">
-          <td>{{ item.name }}</td>
-          <td>{{ item.price }}</td>
-          <td>
-          <p>{{ item.count }}</p>
-          <button @click="plus(item)">＋</button>
-          <button @click="minus(item)">ー</button>
+        <tr v-if="item.count" class="row">
+          <td class="product" >{{ item.name }}</td>
+          <td class="product">{{ item.price }}</td>
+          <td class="product">
+          <div class="item-wrapper">
+            <p>{{ item.count }}</p>
+              <div class="plus-minus">
+                <button @click="plus(item)" class="plus">＋
+                </button>
+                <button @click="minus(item)" class="minus">ー
+                </button>
+              </div>
+          </div>
           </td>
-          <td>{{ item.price * item.count }}</td>
-          <td>
-          <button @click="remove(item)">×</button>
+          <td class="product">{{ item.price * item.count }}</td>
+          <td class="product">
+            <button @click="remove(item)" class="delete">×
+            </button>
           </td>
         </tr>
         </template>
       </table>
-    </div>
-    <div class="btn-wrapper">
-      <router-link to="/product">買い物を続ける</router-link>
-      <router-link to="/customer">次へ</router-link>
-      <!-- <button>次へ</button> -->
-    </div>
+      <p v-if="showError" class="error">
+      カートに商品はありません
+      </p>
+      <div class="btn-wrapper">
+        <router-link to="/product" class="product-page">
+        買い物を続ける
+        </router-link>
+        <a class="link" @click="check">次へ</a>
+      </div>
   </div>
 </template>
 
 <script>
 import StepItem from '@/components/StepItem.vue';
 import axios from 'axios';
+import Header from '@/components/SubHeader.vue';
 
 export default {
   components: {
-    'item-component': StepItem
+    'item-component': StepItem,
+    Header
   },
   async mounted() {
-    const cartBox = await axios
-      .get("http://localhost:8000/api/v1/cart");
-    const productItem = await axios
-      .get("http://localhost:8000/api/v1/purchase");
-      productItem.data.filter(element => {
-        if (element.diagnosis_id === this.diagnosisId) {
+    const cartBox = await axios.get("http://localhost:8000/api/v1/cart");
+    const productItem = await axios.get("http://localhost:8000/api/v1/purchase");
+    productItem.data.filter(element => {
+      if (element.diagnosis_id === this.diagnosisId) {
         this.products.push(element);
       }
-      })
+    });
     this.products.forEach(element => {
       element.count = 0;
       cartBox.data.forEach(value => {
-        
         if (element.id === value.product_id) {
           element.count++;
           element.cartId = value.id
         }
-      })
-    })
-    console.log(this.products);
+      });
+    });
   },
   data() {
     return {
       diagnosisId: this.$store.state.diagnoses.results[0].diagnosis_id,
-      // items: [],
       products: [],
-      // userUid: ''
+      showError: false,
+      number: 1
     }
   },
   methods: {
     async plus(item) {
-      console.log(this.userUid)
       await axios.post("http://localhost:8000/api/v1/cart", {
         product_id: item.id
       });
@@ -86,112 +93,110 @@ export default {
       item.count--;
     },
     async remove(item) {
-      await axios.delete("http://localhost:8000/api/v1/cart/delete" + item.id);
+      await axios.delete("http://localhost:8000/api/v1/cart/all-delete/" + item.id);
       item.count = 0;      
+    },
+    check() {
+      let checkItem = [];
+      this.products.forEach(element => {
+        if (element.count > 0) {
+          checkItem.push(element);
+        }
+      });
+      if (checkItem.length) {
+        this.$router.push('/customer');
+      } else {
+        this.showError = true;
+      }
     }
   },
 }
 </script>
 
-
-
 <style scoped>
 .wrapper {
   background-color: #fff;
-  padding: 40px;
+  padding: 40px 40px 60px;
 }
-
-.image,
-.price,
-.count,
-.total {
-  border-bottom: 1px solid #999;
-}
-
-.image,
-.count,
-.total {
-  border-left: 1px solid #999;
-}
-
-.total {
-  border-right: 1px solid #999;
-}
-
 .cart-table {
-  border-collapse: separate;
   width: 70%;
   margin: 0 auto;
 }
-
-.sub-table {
-  width: 100%;
-  height: 200px;
-}
-
-.item-img {
-  vertical-align: top;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.header-row {
-  height: 50px;
-  line-height: 50px;
+.label {
+  padding: 20px;
   color: #fff;
   background-color: #3F89CD;
 }
-
-.count,
-.total {
+.product {
+  padding: 40px 10px;
   vertical-align: middle;
 }
-
-.name {
-  vertical-align: bottom;
-  text-align: left;
-}
-
-.price {
-  vertical-align: top;
-  text-align: left;
-}
-
-.btn-wrapper {
+.item-wrapper {
   display: flex;
-  justify-content: left;
-  /* margin: 10px 0px; */
+  justify-content: center;
 }
-
+.plus-minus {
+  margin-left: 20px;
+}
 .plus,
-.minus {
-  display: block;
-  width: 40px;
-  height: 40px;
+.minus,
+.delete {
+  width: 30px;
+  height: 30px;
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 5px;
   border: 1px solid #999;
   background-color: #fff;
 }
-
 .plus:hover,
 .minus:hover {
-  border: 2px solid #999;
+  color: #CA8A8A;
+  border: 1px solid #CA8A8A;
 }
-
 .minus {
-  margin-left: 10px;
+  margin-left: 5px;
+}
+.delete {
+  color: #fff;
+  border: 1px solid rgb(211, 84, 84);
+  background-color: rgb(211, 84, 84);
+}
+.row {
+  border: 1px solid #999;
+}
+.btn-wrapper {
+  display: flex;
+  justify-content: right;
+  margin: 50px 80px 40px;
+  align-items: center;
+}
+.product-page {
+  width: 150px;
+  font-size: 18px;
+  margin-top: 20px;
+  margin-right: 410px;
+  border-radius: 5px;
+}
+.error {
+  margin-top: 40px;
 }
 
-.next-btn-wrap {
-  width: 90%;
-  margin: 80px auto;
-  text-align: right;
-  /* background-color: pink; */
+@media screen and (max-width:768px) {
+  .wrapper {
+    padding: 130px 0px 600px;
+  }
+  .cart-table {
+    width: 80%;
+    margin-top: 150px;
+  }
+  .product {
+    padding: 50px 10px;
+  }
+  .product-page {
+    margin-right: 180px;
+  }
+  .btn-wrapper {
+    margin-top: 70px;
+  }
 }
-
-.cart-btn {
-  padding: 12px 40px;
-  background-color: #D1DA6D;
-  border: 1px solid #D1DA6D;
-}</style>
+</style>

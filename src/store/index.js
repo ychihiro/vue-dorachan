@@ -14,10 +14,6 @@ function getDefaultState() {
 
 export default createStore({
   state: getDefaultState,
-  // state: {
-  //   user: {},
-  //   isLogin: false,
-  // },
   getters: {
     user(state) {
       return state.user;
@@ -51,7 +47,7 @@ export default createStore({
   plugins: [createPersistedState(
     { 
       key: 'doraApp',
-      paths: ['isLogin', 'addminUser', 'createUser','diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.evalueation', 'diagnoses.results', 'diagnoses.myResults', 'purchase.presentItem', 'present.carts', 'purchase.firstName', 'purchase.lastName', 'purchase.firstZipcode', 'purchase.lastZipcode', 'purchase.prefecture', 'purchase.city', 'purchase.building', 'purchase.tokenId', 'purchase.date', 'purchase.time', 'purchase.myItemDetails'],
+      paths: ['isLogin', 'addminUser', 'createUser','diagnoses.id', 'diagnoses.characters', 'diagnoses.questions', 'diagnoses.evalueation', 'diagnoses.results', 'diagnoses.myResults', 'purchase.presentItem', 'purchase.carts', 'purchase.firstName', 'purchase.lastName', 'purchase.zipcode', 'purchase.prefecture', 'purchase.city', 'purchase.building', 'purchase.tokenId', 'purchase.date', 'purchase.time', 'purchase.myItemDetails'],
       storage: window.sessionStorage
     }
   )]

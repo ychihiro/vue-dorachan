@@ -10,21 +10,26 @@
       <h2>性格診断一覧</h2>
         <div class="search-wrapper">
           <div class="form-item">
-            <label class="form-label">診断名</label>
+            <label class="form-label">
+            診断名
+            </label>
             <input type="text" v-model="diagnosisKey" class="input-item">
           </div>
           <div class="form-item">
-            <label class="form-label">キャラクター名</label>
+            <label class="form-label">
+            キャラクター名
+            </label>
             <input type="text" v-model="characterKey" class="input-item">
           </div>
           <div class="btn-wrapper">
             <button @click="search" class="search-btn">検索</button>
-            <button @click="popular" class="popular-btn" :class="{ 'popular-btn-active': active}">人気順に並べる
+            <button @click="popular" class="popular-btn" :class="{ 'popular-btn-active': active}">
+            人気順に並べる
             </button>
           </div>
         </div>
         <div class="list-wrapper">
-          <ul v-for="diagnosis in diagnoses" :key="diagnosis.id">
+          <ul v-for="diagnosis in diagnoses" :key="diagnosis.id" class="list">
             <div v-show="show == diagnosis.show">
               <div class="item-wrapper">
                 <diagnosis-item :name="diagnosis.name" :diagnoses="diagnoses">
@@ -44,6 +49,7 @@ import axios from 'axios';
 import Diagnosis from '@/components/DiagnosisItem.vue';
 import Like from '@/components/Like.vue';
 import Header from '@/components/Header.vue';
+
 export default {
   components: {
     'diagnosis-item': Diagnosis,
@@ -51,10 +57,8 @@ export default {
     Header
   },
   async mounted() {
-    const response = await axios
-      .get("http://localhost:8000/api/v1/diagnosis");
+    const response = await axios.get("http://localhost:8000/api/v1/diagnosis");
     this.diagnoses = response.data;
-
     const item = [];
     for (let i = 0; i < this.diagnoses.length; i++) {
       this.diagnosisId.push(this.diagnoses[i].id);
@@ -62,8 +66,6 @@ export default {
       item.push(this.diagnoses[i].characters);
     }
     this.characters = item.flat(2);
-    console.log(this.$store.getters.isLogin)
-    // console.log(this.diagnoses)
   },
   data() {
     return {
@@ -96,9 +98,9 @@ export default {
               } else {
                 element.show = null;
               }
-            })
+            });
           }
-        })
+        });
       }
       this.diagnoses.forEach(element => {
         if (element.name.search(searchDiagnosis) !== -1 && searchDiagnosis) {
@@ -106,27 +108,27 @@ export default {
         } else {
           element.show = null;
         }
-      })
-      // console.log(item)
+      });
       item.forEach(element => {
-        element.show = true
+        element.show = true;
       })
     },
     popular() {
       if (!this.active) {
         this.diagnoses.sort((a, b) => b.count - a.count);
-        this.active = true
+        this.active = true;
       } else {
         this.diagnoses.sort((a, b) => a.id - b.id);
-        this.active = false
+        this.active = false;
       }
     },
   }
 }
 </script>
+
 <style scoped>
 .wrapper {
-  padding: 10px 40px;
+  padding: 10px 40px 40px;
 }
 .ttl {
   font-size: 55px;
@@ -139,10 +141,9 @@ export default {
 }
 .img-wrapper {
   width: 250px;
-  height: 95px;
+  height: 90px;
   margin: 0 auto;
 }
-
 .image {
   width:auto;
   height:auto;
@@ -207,9 +208,8 @@ export default {
   justify-content: right;
 }
 .list-wrapper {
-  width: 60%;
+  width: 65%;
   margin: 20px auto;
-  /* border: 3px solid #000; */
 }
 .item-wrapper {
   display: flex;
@@ -221,8 +221,25 @@ export default {
   border: 2px solid #CA8A8A;
   border-radius: 5px;
 }
-
-ul {
+.list {
   list-style: none;
+}
+
+@media screen and (max-width:768px) {
+  .list-wrapper {
+    width: 90%;
+    margin: 20px auto;
+  }
+  .form-item {
+    display: block;
+  }
+  .input-item {
+    width: 80%;
+  }
+  .search-btn,
+  .popular-btn {
+    width: 150px;
+    margin: 0 5px;
+  }
 }
 </style>

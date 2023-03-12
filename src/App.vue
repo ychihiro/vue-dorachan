@@ -1,21 +1,10 @@
 <template>
-  <!-- <Header/> -->
-  
-  <!-- <nav> -->
-    <!-- <router-link to="/"></router-link>  -->
-    <!-- <router-link to="/about">About</router-link> | -->
-    
-  <!-- </nav> -->
   <router-view/>
 </template>
 
 <script>
-// import Header from '@/components/Header.vue'
 export default {
   name: 'App',
-  // components: {
-  //   Header
-  // }
 };
 </script>
 
@@ -38,21 +27,11 @@ body {
   display: flex;
   justify-content: right;
   padding: 20px 10px;
-  /* border: 2px solid #000; */
 }
-
-/* .register {
-  background-color: #fff;
-  width: 250px;
-  padding: 20px 30px;
-  margin: 0 auto;
-  border-radius: 10px;
-} */
 
 .username,
 .email,
 .password {
-  /* border: 2px solid red; */
   display: block;
   text-align: left;
   margin-bottom: 30px;
@@ -64,7 +43,11 @@ body {
 .register-btn,
 .send-btn,
 .home-btn,
-.head-btn {
+.head-btn,
+.product-page,
+.share-btn,
+.card-btn,
+.change-btn {
   width: 110px;
   padding: 10px 10px;
   font-size: 20px;
@@ -83,22 +66,28 @@ body {
 .register-btn:hover,
 .send-btn:hover,
 .home-btn:hover,
-.head-btn:hover {
+.head-btn:hover,
+.product-page:hover,
+.share-btn:hover,
+.card-btn:hover,
+.change-btn:hover {
   font-weight: bold;
 }
 
-.error {
+.link {
+  color: #3F89CD;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.error,
+.register-msg {
   display: block;
   margin-bottom: 10px;
   font-size: 16px;
   color: red;
 }
-
-/* input {
-  width: 100%;
-  height: 30px;
-  padding: 5px;
-  font-size: 15px;
-  border-radius: 5px;
-} */
 </style>

@@ -22,11 +22,10 @@ export default {
       firebase.auth().signOut()
         .then(() => {
           this.$router.push('/');
-          alert('成功');
           this.$store.commit('reset');
         })
         .catch(() => {
-          alert('ログアウトに失敗しました')
+          alert('ログアウトに失敗しました');
         });
     }
   },

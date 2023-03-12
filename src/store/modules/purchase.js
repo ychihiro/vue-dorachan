@@ -2,11 +2,10 @@ function getDefaultState() {
   return {
     carts: [],
     presentItem: '',
-    quantity: [],
+    // quantity: [],
     firstName: '',
     lastName: '',
-    firstZipcode: '',
-    lastZipcode: '',
+    zipcode: '',
     prefecture: '',
     city: '',
     building: '',
@@ -42,20 +41,17 @@ export default {
     setCarts(state, payload) {
       state.carts = payload
     },
-    setQuantity(state, payload) {
-      state.quantity = payload
-    },
+    // setQuantity(state, payload) {
+    //   state.quantity = payload
+    // },
     setFirstName(state, payload) {
       state.firstName = payload;
     },
     setLastName(state, payload) {
       state.lastName = payload;
     },
-    setFirstZipcode(state, payload) {
-      state.firstZipcode = payload;
-    },
-    setLastZipcode(state, payload) {
-      state.lastZipcode = payload;
+    setZipcode(state, payload) {
+      state.zipcode = payload;
     },
     setPrefecture(state, payload) {
       state.prefecture = payload;

@@ -13,11 +13,11 @@ export default {
   },
   methods: {
     clickName() {
-      const item = this.diagnosesItem
+      const item = this.diagnosesItem;
       for (let i = 0; i < item.length; i++) {
         if (item[i].name === this.name) {
-          console.log(item[i])
-          this.$store.commit('diagnoses/setId', item[i].id)
+          console.log(item[i]);
+          this.$store.commit('diagnoses/setId', item[i].id);
           this.$store.commit('diagnoses/setCharacters', item[i].characters);
           this.$store.commit('diagnoses/setQuestions', item[i].questions);
           console.log(item[i].id);
@@ -33,11 +33,10 @@ export default {
 
 <style scoped>
 .item {
-  font-size: 25px;
+  font-size: 22px;
 }
 .item:hover {
   color: #CA8A8A;
   font-weight: bold;
 }
-
 </style>

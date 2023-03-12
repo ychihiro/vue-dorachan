@@ -7,19 +7,16 @@ import Share from '../views/ShareResult.vue'
 import Diagnosis from '../views/Diagnosis.vue'
 import Result from '../views/Result.vue'
 import MyResult from '../views/MyResult.vue'
-import MyDetail from '../views/MyDetail.vue'
+import History from '../views/ History.vue'
 import MyPage from '../views/MyPage.vue'
 import CreateDiagnosis from '../views/CreateDiagnosis.vue'
-import DetailProduct from '../views/DetailProduct.vue'
+import Detail from '../views/Detail.vue'
 import Product from '../views/Product.vue'
 import Cart from '../views/Cart.vue'
 import Customer from '../views/CustomerInformation.vue'
 import Comfirm from '../views/Comfirm.vue'
-import Addmin from '../views/Addmin.vue'
+import Admin from '../views/Admin.vue'
 import store from '@/store/index.js'
-// import firebase from '../main';
-
-
 
 const routes = [
   {
@@ -83,15 +80,15 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/my-detail',
-    name: 'my-detail',
-    component: MyDetail,
+    path: '/history',
+    name: 'history',
+    component: History,
     meta: { requiresAuth: true }
   },
   {
-    path: '/addmin',
-    name: 'addmin',
-    component: Addmin,
+    path: '/admin',
+    name: 'admin',
+    component: Admin,
     beforeEnter(to, from, next) {
       if (!store.state.addminUser) {
         next('/')
@@ -103,7 +100,7 @@ const routes = [
   {
     path: '/detail',
     name: 'detail',
-    component: DetailProduct,
+    component: Detail,
     meta: { requiresAuth: true }
   },
   {

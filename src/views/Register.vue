@@ -3,25 +3,35 @@
   <div class="wrapper">
     <div class="register-wrapper">
       <Form>
-      <label class="name-label">ユーザーネーム</label>
-      <Field name="name" type="text" v-model="userName" placeholder="のび太" class="input-name" :rules="nameRules"/>
-      <ErrorMessage name="name" class="error"/>
-      <label class="mail-label">メールアドレス</label>
-      <Field name="email" type="email" v-model="email" placeholder="nobi@nobita.com" class="input-mail" :rules="emailRules"/>
-      <ErrorMessage name="email" class="error"/>
-      <label class="password-label">パスワード</label>
-      <Field name="password" type="password" v-model="password" placeholder="nobinobita" class="input-password" :rules="passwordRules"/>
-      <ErrorMessage name="password" class="error"/>
+        <label class="name-label">
+        ユーザーネーム
+        </label>
+        <div class="form-wrapper">
+          <Field name="name" type="text" v-model="userName" placeholder="のび太" class="input-name" :rules="nameRules"/>
+          <ErrorMessage name="name" class="error"/>
+        </div>
+        <label class="mail-label">
+        メールアドレス
+        </label>
+        <div class="form-wrapper">
+          <Field name="email" type="email" v-model="email" placeholder="nobi@nobita.com" class="input-mail" :rules="emailRules"/>
+          <ErrorMessage name="email" class="error"/>
+        </div>
+        <label class="password-label">パスワード</label>
+        <div class="form-wrapper">
+          <Field name="password" type="password" v-model="password" placeholder="nobinobita" class="input-password" :rules="passwordRules"/>
+          <ErrorMessage name="password" class="error"/>
+        </div>
       </Form>
       <button @click="register" class="register-btn">登録</button>
+      <p v-if="showError" class="error">入力内容に誤りがあります。</p>
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import firebase from 'firebase';
-import Header from '@/components/HeaderSecond.vue';
+import Header from '@/components/SubHeader.vue';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import * as yup from "yup";
 
@@ -33,15 +43,16 @@ export default {
     ErrorMessage
 },
   data() {
-return {
-  userName: '',
-  email: '',
-  password: '',
-  uid: '',
-  nameRules: yup.string().required('※入力必須項目です').max(191, '※191文字以内で入力してください'),
-  emailRules: yup.string().required('※入力必須項目です').matches(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/, '※無効なメールアドレスです').max(191, '※191文字以内で入力してください'),
-  passwordRules: yup.string().required('※入力必須項目です').min(8, '※8文字以上で入力してください').max(191, '※191文字以内で入力してください')
-};
+    return {
+      userName: '',
+      email: '',
+      password: '',
+      uid: '',
+      nameRules: yup.string().required('※入力必須項目です').max(191, '※191文字以内で入力してください'),
+      emailRules: yup.string().required('※入力必須項目です').matches(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/, '※無効なメールアドレスです').max(191, '※191文字以内で入力してください'),
+      passwordRules: yup.string().required('※入力必須項目です').min(8, '※8文字以上で入力してください').max(191, '※191文字以内で入力してください'),
+      showError: false
+    };
   },
   methods: {
     register() {
@@ -49,24 +60,18 @@ return {
       const email = this.email;
       const password = this.password;
       const format = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
-      const result = format.test(email)
+      const result = format.test(email);
       if (name !== '' && name.length <= 191 && email !== '' && email.length <= 191 && result && password !== '' && password.length <= 191 && password.length >= 8) {
-        console.log('成功')
+        this.showError = false;
         firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
           .then((userCredential) => {
-            // this.sendEmail(this.email)
-            // userCredential.user.sendEmailVerification().then(() => {
-            //   console.log('確認メール送信')
-            // });
+            this.sendEmail(this.email);
             userCredential.user.updateProfile({
               displayName: this.userName
             })
             this.uid = userCredential.user.uid;
-            console.log(this.userName);
-            console.log(this.uid);
-            // console.log(userCredential);
             axios
               .post("http://localhost:8000/api/v1/user",
                 {
@@ -75,10 +80,9 @@ return {
                   password: this.password,
                   id: this.uid
                 })
-                .then((response) => {
-                console.log(response);
-                // this.$router.push('/login');
-              })
+              .then(() => {
+                this.showError = false;
+              });
           })
           .catch((error) => {
             switch (error.code) {
@@ -90,23 +94,20 @@ return {
                 break;
             }
           });
-        
-              
-          
-      
-          // })
-      
-    }
-    // sendEmail() {
-    //   const actionUri = {
-    //     url: 'http://localhost:8080/login'
-    //   };
-    //   firebase.auth().languageCode = "ja";
-    //   const user = firebase.auth().currentUser;
-    //   user
-    //     .sendEmailVerification(actionUri)
-    //     .then(() => alert("認証メールを送りました!"))
-    //     .catch((e) => console.log(e));
+      } else {
+        this.showError = true;
+      }
+    },  
+    sendEmail() {
+      const actionUri = {
+        url: 'http://localhost:8080/login'
+      };
+      firebase.auth().languageCode = "ja";
+      const user = firebase.auth().currentUser;
+      user
+        .sendEmailVerification(actionUri)
+        .then(() => alert("認証メールを送信しました!メールからログインしてください！"))
+        .catch((e) => console.log(e));
     }
   },
 };
@@ -140,12 +141,33 @@ return {
   padding: 5px 10px;
   border: 1px solid #999;
   border-radius: 5px;
-  margin-bottom: 20px;
 }
 .register-btn {
   border: 1px solid #D1DA6D;
   background-color: #D1DA6D;
   margin-top: 20px;
+}
+.error {
+  margin-top: 20px;
+}
+.form-wrapper {
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width:768px) {
+  .wrapper {
+    padding: 40% 0px;
+  }
+  .register-wrapper {
+    width: 50%;
+    padding: 50px 60px;
+  }
+  .input-name,
+  .input-mail,
+  .input-password {
+    width: 80%;
+    height: 50px;
+  }
 }
 </style>
 
