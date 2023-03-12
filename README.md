@@ -39,6 +39,7 @@
 - Firebase8.6
 
 ## テーブル設計
+<img width="370" alt="スクリーンショット 2023-03-12 9 35 20" src="https://user-images.githubusercontent.com/114800637/224517902-0f342547-d8d7-4388-a4da-69d0032a0602.png">
 
 ## ER図
 
