@@ -47,6 +47,13 @@
 <img width="751" alt="スクリーンショット 2023-03-12 9 20 20" src="https://user-images.githubusercontent.com/114800637/224517953-2fe2607d-c7db-41ee-b023-641d27f1e249.png">
 
 # 環境構築方法
+①フロント
+- git clone https://github.com/ychihiro/laravel-doraemon.git
+- npm install -g @vue/cli
+- [Node.jsインストール]https://nodejs.org/ja/download/
+- yarn install
+- yarn serve
+②
 
 ## テストユーザー
 ①ユーザー
