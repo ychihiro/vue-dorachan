@@ -41,6 +41,8 @@
 ## テーブル設計
 <img width="370" alt="スクリーンショット 2023-03-12 9 35 20" src="https://user-images.githubusercontent.com/114800637/224517902-0f342547-d8d7-4388-a4da-69d0032a0602.png">
 
+<img width="364" alt="スクリーンショット 2023-03-12 9 35 59" src="https://user-images.githubusercontent.com/114800637/224517938-184c59d5-c235-48b1-833f-84d9ddbcfb8c.png">
+
 ## ER図
 
 # 環境構築方法
