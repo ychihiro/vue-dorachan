@@ -6,8 +6,6 @@
 ## 作成した目的
 卒業課題のため私が作ってみたかったアプリを作成しました。
 
-## アプリケーションURL
-
 ## 他のリポジトリ
 [Lalavelリポジトリ](https://github.com/ychihiro/laravel-doraemon.git)
 
@@ -61,6 +59,12 @@
 - composer update
 - .env.exampleを.envに変更
 - .envファイルの修正
+<img width="251" alt="スクリーンショット 2023-03-12 10 36 36" src="https://user-images.githubusercontent.com/114800637/224519446-47f7504d-d4f9-4cbc-beb9-d7925cca75c1.png">
+
+- php artisan key:generate
+- php artisan migrate:fresh
+- php artisan db:seed
+- php artisan serve
 
 ## テストユーザー
 ①ユーザー
