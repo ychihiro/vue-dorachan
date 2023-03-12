@@ -1,24 +1,47 @@
 # きみはだれ？〜ぼくドラえもん
 
-## 10問の質問に答えていただくと、ユーザーにそっくりなキャラクターが見つかります
-```
-yarn install
-```
+10個の質問に答えていただくと、ユーザーにそっくりなキャラクターが見つかります。
+<img width="512" alt="スクリーンショット 2023-03-11 16 54 11" src="https://user-images.githubusercontent.com/114800637/224474105-843162d5-da0b-4192-bb8a-0e9a0ad58fe5.png">
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+## 作成した目的
+卒業課題のため私が作ってみたかったアプリを作成しました。
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## アプリケーションURL
 
-### Lints and fixes files
-```
-yarn lint
-```
+## 他のリポジトリ
+[Lalavelリポジトリ](https://github.com/ychihiro/laravel-doraemon.git)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 機能一覧
+- 登録機能
+- ログイン機能
+- ログアウト機能
+- メール認証機能
+- 診断機能
+- 診断結果一覧
+- 診断名・キャラクター名・人気順の検索機能
+- お気に入り登録機能
+- お気に入り解除機能
+- お気に入り一覧機能
+- 診断評価機能
+- マイページ機能
+- 診断結果確認用のQRコード機能
+- 一斉メール送信機能
+- 商品購入(決済)機能
+- 購入履歴確認機能
+- 商品購入のための住所・お届け日時登録機能
+- 住所・お届け日時変更機能
+- リマインダー送信機能
+- ステッカー抽選機能
+
+## 使用技術
+- Laravel8.83.27
+- Vue3
+- Firebase8.6
+
+## テーブル設計
+
+## ER図
+
+# 環境構築方法
+
+## テストユーザー
