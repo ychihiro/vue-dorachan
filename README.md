@@ -44,7 +44,19 @@
 <img width="364" alt="スクリーンショット 2023-03-12 9 35 59" src="https://user-images.githubusercontent.com/114800637/224517938-184c59d5-c235-48b1-833f-84d9ddbcfb8c.png">
 
 ## ER図
+<img width="751" alt="スクリーンショット 2023-03-12 9 20 20" src="https://user-images.githubusercontent.com/114800637/224517953-2fe2607d-c7db-41ee-b023-641d27f1e249.png">
 
 # 環境構築方法
 
 ## テストユーザー
+①ユーザー
+- メールアドレス：nobi@nobita.com
+- パスワード：nobinobita
+
+②診断作成者
+- メールアドレス：create@diagnosis.com
+- パスワード：creatediagnosis
+
+③管理者
+- メールアドレス：addmin@user.com
+- パスワード：addminuser
